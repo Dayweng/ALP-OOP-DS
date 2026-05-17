@@ -42,7 +42,7 @@ public class MainFlow {
         System.out.println();
         System.out.println("  Sistem Informasi Aspirasi Publik");
         System.out.println("  Pemerintah Kabupaten Sidoarjo");
-        System.out.println("  Versi 1.0 — Phase 1 (Register, Login, Tambah Aspirasi)");
+        System.out.println("  Versi 1.0 - Phase 1 (Register, Login, Tambah Aspirasi)");
         System.out.println();
         System.out.println("══════════════════════════════════════════════════════");
     }
@@ -57,7 +57,7 @@ public class MainFlow {
     static void printHeader() {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════════╗");
-        System.out.println("║  SIGAP — Sistem Informasi Aspirasi Publik    ║");
+        System.out.println("║  SIGAP - Sistem Informasi Aspirasi Publik    ║");
         System.out.println("╚══════════════════════════════════════════════╝");
     }
 
@@ -183,10 +183,11 @@ public class MainFlow {
                     running = false;
                     break;
                 default:
-                    System.out.println("  ⚠ Pilihan tidak valid! Masukkan angka 0–2.");
+                    System.out.println("   Pilihan tidak valid! Masukkan angka 0 -2.");
             }
         }
     }
+
 
 
     static void prosesRegister() {
@@ -203,7 +204,7 @@ public class MainFlow {
         String nama = sc.nextLine().trim();
 
         if (nama.isEmpty()) {
-            System.out.println("  ⚠ Nama tidak boleh kosong. Registrasi dibatalkan.");
+            System.out.println("   Nama tidak boleh kosong. Registrasi dibatalkan.");
             return;
         }
 
@@ -211,18 +212,18 @@ public class MainFlow {
         String username = sc.nextLine().trim().toLowerCase();
 
         if (username.isEmpty()) {
-            System.out.println("  ⚠ Username tidak boleh kosong. Registrasi dibatalkan.");
+            System.out.println("  Username tidak boleh kosong. Registrasi dibatalkan.");
             return;
         }
 
         if (username.contains(" ")) {
-            System.out.println("  ⚠ Username tidak boleh mengandung spasi.");
+            System.out.println("  Username tidak boleh mengandung spasi.");
             return;
         }
 
         if (userMap.containsKey(username)) {
-            System.out.println("  ⚠ Username '" + username + "' sudah digunakan.");
-            System.out.println("    Silakan pilih username lain.");
+            System.out.println("   Username '" + username + "' sudah digunakan.");
+            System.out.println("  Silakan pilih username lain.");
             return;
         }
 
@@ -230,7 +231,7 @@ public class MainFlow {
         String password = sc.nextLine().trim();
 
         if (password.length() < 6) {
-            System.out.println("  ⚠ Password minimal 6 karakter.");
+            System.out.println("  Password minimal 6 karakter.");
             return;
         }
 
@@ -238,7 +239,7 @@ public class MainFlow {
         String konfirmasi = sc.nextLine().trim();
 
         if (!password.equals(konfirmasi)) {
-            System.out.println("  ⚠ Password dan konfirmasi tidak cocok. Registrasi dibatalkan.");
+            System.out.println("  Password dan konfirmasi tidak cocok. Registrasi dibatalkan.");
             return;
         }
 
@@ -247,7 +248,7 @@ public class MainFlow {
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════╗");
-        System.out.println("  ║   ✓ REGISTRASI BERHASIL!             ║");
+        System.out.println("  ║     REGISTRASI BERHASIL!             ║");
         System.out.println("  ╚══════════════════════════════════════╝");
         System.out.println("    Nama     : " + nama);
         System.out.println("    Username : " + username);
@@ -268,7 +269,7 @@ public class MainFlow {
         String username = sc.nextLine().trim().toLowerCase();
 
         if (!userMap.containsKey(username)) {
-            System.out.println("  ⚠ Username '" + username + "' tidak ditemukan.");
+            System.out.println("   Username '" + username + "' tidak ditemukan.");
             System.out.println("    Silakan register terlebih dahulu.");
             return;
         }
@@ -280,13 +281,13 @@ public class MainFlow {
         User user = userMap.get(username);
 
         if (!user.login(password)) {
-            System.out.println("  ⚠ Password salah! Silakan coba lagi.");
+            System.out.println("   Password salah! Silakan coba lagi.");
             return;
         }
 
         currentUser = user;
         System.out.println();
-        System.out.println("  ✓ Login berhasil!");
+        System.out.println("    Login berhasil!");
         System.out.println("  Selamat datang, " + user.getNama() + "! [" + user.getRole() + "]");
 
         String role = user.getRole();
@@ -301,7 +302,7 @@ public class MainFlow {
             dashboardInstitutionAdmin((InstitutionAdmin) user);
 
         } else {
-            System.out.println("  ⚠ Role tidak dikenali. Hubungi administrator.");
+            System.out.println("   Role tidak dikenali. Hubungi administrator.");
         }
 
         currentUser = null;
@@ -327,7 +328,7 @@ public class MainFlow {
                 case 4:
                     
                     System.out.println();
-                    System.out.println("  ⏳ Fitur ini akan tersedia di Phase 2.");
+                    System.out.println("    Fitur ini akan tersedia di Phase 2.");
                     System.out.println("     Silakan tunggu update berikutnya.");
                     break;
 
@@ -338,7 +339,7 @@ public class MainFlow {
                     break;
 
                 default:
-                    System.out.println("  ⚠ Pilihan tidak valid! Masukkan angka 0–4.");
+                    System.out.println("   Pilihan tidak valid! Masukkan angka 0 -4.");
             }
         }
     }
@@ -359,7 +360,7 @@ public class MainFlow {
         String title = sc.nextLine().trim();
 
         if (title.isEmpty()) {
-            System.out.println("  ⚠ Judul tidak boleh kosong. Dibatalkan.");
+            System.out.println("   Judul tidak boleh kosong. Dibatalkan.");
             return;
         }
 
@@ -368,7 +369,7 @@ public class MainFlow {
         String description = sc.nextLine().trim();
 
         if (description.isEmpty()) {
-            System.out.println("  ⚠ Deskripsi tidak boleh kosong. Dibatalkan.");
+            System.out.println("   Deskripsi tidak boleh kosong. Dibatalkan.");
             return;
         }
 
@@ -399,7 +400,7 @@ public class MainFlow {
         String location = sc.nextLine().trim();
 
         if (location.isEmpty()) {
-            System.out.println("  ⚠ Lokasi tidak boleh kosong. Dibatalkan.");
+            System.out.println("   Lokasi tidak boleh kosong. Dibatalkan.");
             return;
         }
 
@@ -427,7 +428,7 @@ public class MainFlow {
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════════╗");
-        System.out.println("  ║    ✓ ASPIRASI BERHASIL DIKIRIM!          ║");
+        System.out.println("  ║      ASPIRASI BERHASIL DIKIRIM!          ║");
         System.out.println("  ╚══════════════════════════════════════════╝");
         System.out.println("    ID Aspirasi  : " + newId);
         System.out.println("    Judul        : " + title);
@@ -454,20 +455,20 @@ public class MainFlow {
                 case 1:
                 case 2:
                     System.out.println();
-                    System.out.println("  ⏳ Fitur ini akan tersedia di Phase 2.");
+                    System.out.println("    Fitur ini akan tersedia di Phase 2.");
                     break;
                 case 3:
                 case 4:
                 case 5:
                     System.out.println();
-                    System.out.println("  ⏳ Fitur ini akan tersedia di Phase 3.");
+                    System.out.println("    Fitur ini akan tersedia di Phase 3.");
                     break;
                 case 0:
                     admin.logout();
                     loggedIn = false;
                     break;
                 default:
-                    System.out.println("  ⚠ Pilihan tidak valid!");
+                    System.out.println("   Pilihan tidak valid!");
             }
         }
     }
@@ -486,14 +487,14 @@ public class MainFlow {
                 case 1:
                 case 2:
                     System.out.println();
-                    System.out.println("  ⏳ Fitur ini akan tersedia di Phase 3.");
+                    System.out.println("    Fitur ini akan tersedia di Phase 3.");
                     break;
                 case 0:
                     ia.logout();
                     loggedIn = false;
                     break;
                 default:
-                    System.out.println("  ⚠ Pilihan tidak valid!");
+                    System.out.println("   Pilihan tidak valid!");
             }
         }
     }
@@ -506,7 +507,7 @@ public class MainFlow {
             return nilai;
         } catch (InputMismatchException e) {
             sc.nextLine();    
-            System.out.println("  ⚠ Input harus berupa angka!");
+            System.out.println("   Input harus berupa angka!");
             return -1;
         }
     }

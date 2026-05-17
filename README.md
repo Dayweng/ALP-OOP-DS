@@ -1,4 +1,4 @@
-# SIGAP — Sistem Informasi Aspirasi Publik
+# SIGAP - Sistem Informasi Aspirasi Publik
 ## Phase 1: Register, Login, Logout, Tambah Aspirasi
 
 ---
@@ -69,12 +69,12 @@ Aspirasi dummy yang sudah tersedia: ASP001, ASP002, ASP003
 | 2  | Login           | ✅ Aktif | Login untuk semua role            |
 | 3  | Logout          | ✅ Aktif | Keluar dari sesi                  |
 | 4  | Tambah Aspirasi | ✅ Aktif | Citizen kirim aspirasi baru       |
-| 5  | Lihat Aspirasi  | ⏳ Phase 2 | Coming soon                    |
-| 6  | Upvote          | ⏳ Phase 2 | Coming soon                    |
-| 7  | Cari Aspirasi   | ⏳ Phase 2 | Coming soon                    |
-| 8  | Verifikasi      | ⏳ Phase 2 | Coming soon                    |
-| 9  | Prioritas       | ⏳ Phase 2 | Coming soon                    |
-| 10 | Distribusi      | ⏳ Phase 3 | Coming soon                    |
+| 5  | Lihat Aspirasi  |   Phase 2 | Coming soon                    |
+| 6  | Upvote          |   Phase 2 | Coming soon                    |
+| 7  | Cari Aspirasi   |   Phase 2 | Coming soon                    |
+| 8  | Verifikasi      |   Phase 2 | Coming soon                    |
+| 9  | Prioritas       |   Phase 2 | Coming soon                    |
+| 10 | Distribusi      |   Phase 3 | Coming soon                    |
 
 ---
 
