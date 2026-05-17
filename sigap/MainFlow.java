@@ -41,7 +41,6 @@ public class MainFlow {
         System.out.println("  ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ");
         System.out.println();
         System.out.println("  Sistem Informasi Aspirasi Publik");
-        System.out.println("  Pemerintah Kabupaten Sidoarjo");
         System.out.println("  Versi 1.0 - Phase 1 (Register, Login, Tambah Aspirasi)");
         System.out.println();
         System.out.println("══════════════════════════════════════════════════════");
@@ -344,14 +343,13 @@ public class MainFlow {
         }
     }
 
-    
+    //#region tambah aspirasi
     static void prosesTambahAspirasi(Citizen citizen) {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
         System.out.println("║         TAMBAH ASPIRASI BARU             ║");
         System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  Sampaikan aspirasi Anda kepada          ║");
-        System.out.println("║  pemerintah daerah Sidoarjo.             ║");
+        System.out.println("║        Sampaikan aspirasi Anda           ║");
         System.out.println("╚══════════════════════════════════════════╝");
         System.out.println();
 
@@ -360,16 +358,15 @@ public class MainFlow {
         String title = sc.nextLine().trim();
 
         if (title.isEmpty()) {
-            System.out.println("   Judul tidak boleh kosong. Dibatalkan.");
+            System.out.println("Judul tidak boleh kosong.");
             return;
         }
-
         
         System.out.print("  Deskripsi       : ");
         String description = sc.nextLine().trim();
 
         if (description.isEmpty()) {
-            System.out.println("   Deskripsi tidak boleh kosong. Dibatalkan.");
+            System.out.println("Deskripsi tidak boleh kosong.");
             return;
         }
 
@@ -394,16 +391,17 @@ public class MainFlow {
             default: category = "Lainnya";       break;
         }
 
-        System.out.println("  Kategori dipilih: " + category);
+        System.out.println("Kategori dipilih: " + category);
 
-        System.out.print("  Lokasi          : ");
+        System.out.print("Lokasi          : ");
         String location = sc.nextLine().trim();
 
         if (location.isEmpty()) {
-            System.out.println("   Lokasi tidak boleh kosong. Dibatalkan.");
+            System.out.println("Lokasi tidak boleh kosong.");
             return;
         }
 
+        //Konfirmasi data aspirasi sebelum disimpan
         System.out.println();
         System.out.println("  ── Konfirmasi Aspirasi ──────────────────");
         System.out.println("  Judul     : " + title);
@@ -411,11 +409,11 @@ public class MainFlow {
         System.out.println("  Kategori  : " + category);
         System.out.println("  Lokasi    : " + location);
         System.out.println("  ─────────────────────────────────────────");
-        System.out.print("  Kirim aspirasi ini? (y/n): ");
+        System.out.print("Kirim aspirasi ini? (y/n): ");
         String konfirmasi = sc.nextLine().trim().toLowerCase();
 
         if (!konfirmasi.equals("y") && !konfirmasi.equals("ya")) {
-            System.out.println("  Aspirasi dibatalkan.");
+            System.out.println("Aspirasi dibatalkan.");
             return;
         }
 
@@ -437,8 +435,8 @@ public class MainFlow {
         System.out.println("    Status       : " + aspirasiBaru.getStatus().getLabel());
         System.out.println("    Antrian ke-  : " + verificationQueue.size());
         System.out.println();
-        System.out.println("  Aspirasi Anda akan segera diverifikasi oleh Admin.");
-        System.out.println("  Simpan ID Aspirasi Anda: " + newId);
+        System.out.println("Aspirasi Anda akan segera diverifikasi oleh Admin.");
+        System.out.println("Simpan ID Aspirasi Anda: " + newId);
     }
 
 
@@ -507,7 +505,7 @@ public class MainFlow {
             return nilai;
         } catch (InputMismatchException e) {
             sc.nextLine();    
-            System.out.println("   Input harus berupa angka!");
+            System.out.println("Input harus berupa angka!");
             return -1;
         }
     }
