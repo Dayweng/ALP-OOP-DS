@@ -1,4 +1,4 @@
-package sigap.model;
+package sigap;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

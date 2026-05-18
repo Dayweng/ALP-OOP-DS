@@ -1,4 +1,4 @@
-package sigap.model;
+package sigap;
 
 public class Citizen extends User {
     public Citizen(String username, String password, String nama) {

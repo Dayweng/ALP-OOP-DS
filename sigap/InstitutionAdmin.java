@@ -1,4 +1,4 @@
-package sigap.model;
+package sigap;
 public class InstitutionAdmin extends User {
     private String institutionName;
     public InstitutionAdmin(String username, String password,

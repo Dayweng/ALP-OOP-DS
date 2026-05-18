@@ -1,4 +1,4 @@
-package sigap.model;
+package sigap;
 
 import java.util.PriorityQueue;
 

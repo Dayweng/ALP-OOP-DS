@@ -1,4 +1,4 @@
-package sigap.model;
+package sigap;
 
 public class Admin extends User {
 

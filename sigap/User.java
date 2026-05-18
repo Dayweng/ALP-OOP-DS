@@ -1,4 +1,4 @@
-package sigap.model;
+package sigap;
 
 
 public abstract class User {

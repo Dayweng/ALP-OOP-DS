@@ -5,7 +5,6 @@ import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.Scanner;
 import sigap.enums.Priority;
-import sigap.model.*;
 
 
 public class MainFlow {
@@ -19,9 +18,6 @@ public class MainFlow {
     static Scanner sc = new Scanner(System.in);
     static User currentUser = null;
 
-
-    
-
     public static void main(String[] args) {
         printBanner();                 
         inisialisasiDummyData();       
@@ -29,7 +25,6 @@ public class MainFlow {
         menuUtama();                  
         sc.close();                   
     }
-
  
     static void printBanner() {
         System.out.println();
@@ -41,7 +36,7 @@ public class MainFlow {
         System.out.println("  ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ");
         System.out.println();
         System.out.println("  Sistem Informasi Aspirasi Publik");
-        System.out.println("  Versi 1.0 - Phase 1 (Register, Login, Tambah Aspirasi)");
+        System.out.println("  Versi 1.0 - (Register, Login, Tambah Aspirasi)");
         System.out.println();
         System.out.println("══════════════════════════════════════════════════════");
     }
@@ -188,7 +183,7 @@ public class MainFlow {
     }
 
 
-
+    //#region registrasi 
     static void prosesRegister() {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
@@ -327,8 +322,7 @@ public class MainFlow {
                 case 4:
                     
                     System.out.println();
-                    System.out.println("    Fitur ini akan tersedia di Phase 2.");
-                    System.out.println("     Silakan tunggu update berikutnya.");
+                    System.out.println("    Coming Soon!");
                     break;
 
                 case 0:
