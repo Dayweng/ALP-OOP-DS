@@ -1,7 +1,7 @@
 package sigap.enums;
 
 public enum Priority {
-
+    
     LOW    ("Rendah"),
     MEDIUM ("Sedang"),
     HIGH   ("Tinggi");

@@ -21,8 +21,8 @@ public class Admin extends User {
         System.out.println("║  Halo, " + getNama() + "!");
         System.out.println("║  Role    : Administrator Sistem          ║");
         System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  [1] Verifikasi Aspirasi   (Phase 2)     ║");
-        System.out.println("║  [2] Penentuan Prioritas   (Phase 2)     ║");
+        System.out.println("║  [1] Verifikasi Aspirasi                 ║");
+        System.out.println("║  [2] Penentuan Prioritas                 ║");
         System.out.println("║  [3] Distribusi Institusi  (Phase 3)     ║");
         System.out.println("║  [4] Dashboard Statistik   (Phase 3)     ║");
         System.out.println("║  [5] Tambah Admin Baru     (Phase 3)     ║");

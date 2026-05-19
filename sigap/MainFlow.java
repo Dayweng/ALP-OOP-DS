@@ -307,7 +307,7 @@ public class MainFlow {
         boolean loggedIn = true;
 
         while (loggedIn) {
-            citizen.showDashboard();   
+            citizen.showDashboard();
             System.out.print("  Pilihan Anda: ");
 
             int pilihan = bacaInt();
@@ -316,21 +316,19 @@ public class MainFlow {
                 case 1:
                     prosesTambahAspirasi(citizen);
                     break;
-
                 case 2:
-                case 3:
-                case 4:
-                    
-                    System.out.println();
-                    System.out.println("    Coming Soon!");
+                    tampilkanAspirasiCitizen(citizen);
                     break;
-
+                case 3:
+                    upvoteAspiration(citizen);
+                    break;
+                case 4:
+                    cariAspirasi();
+                    break;
                 case 0:
-                    
-                    citizen.logout();    
+                    citizen.logout();
                     loggedIn = false;
                     break;
-
                 default:
                     System.out.println("   Pilihan tidak valid! Masukkan angka 0 -4.");
             }
@@ -341,13 +339,12 @@ public class MainFlow {
     static void prosesTambahAspirasi(Citizen citizen) {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║         TAMBAH ASPIRASI BARU             ║");
+        System.out.println("║          TAMBAH ASPIRASI BARU            ║");
         System.out.println("╠══════════════════════════════════════════╣");
         System.out.println("║        Sampaikan aspirasi Anda           ║");
         System.out.println("╚══════════════════════════════════════════╝");
         System.out.println();
 
-     
         System.out.print("  Judul Aspirasi  : ");
         String title = sc.nextLine().trim();
 
@@ -355,7 +352,7 @@ public class MainFlow {
             System.out.println("Judul tidak boleh kosong.");
             return;
         }
-        
+
         System.out.print("  Deskripsi       : ");
         String description = sc.nextLine().trim();
 
@@ -376,7 +373,6 @@ public class MainFlow {
         int katPilihan = bacaInt();
         String category;
 
-
         switch (katPilihan) {
             case 1:  category = "Infrastruktur"; break;
             case 2:  category = "Pendidikan";    break;
@@ -395,7 +391,7 @@ public class MainFlow {
             return;
         }
 
-        //Konfirmasi data aspirasi sebelum disimpan
+        // Konfirmasi data aspirasi sebelum disimpan
         System.out.println();
         System.out.println("  ── Konfirmasi Aspirasi ──────────────────");
         System.out.println("  Judul     : " + title);
@@ -414,8 +410,6 @@ public class MainFlow {
         String newId = generateId();
         Aspiration aspirasiBaru = citizen.buatAspirasi(newId, title, description, category, location);
         aspirationMap.put(newId, aspirasiBaru);
-
-
         verificationQueue.add(aspirasiBaru);
 
         System.out.println();
@@ -433,6 +427,106 @@ public class MainFlow {
         System.out.println("Simpan ID Aspirasi Anda: " + newId);
     }
 
+    static void tampilkanAspirasiCitizen(Citizen citizen) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║         ASPIRASI SAYA (User)             ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        boolean adaAspirasi = false;
+        for (Aspiration aspirasi : aspirationMap.values()) {
+            if (aspirasi.getAuthor().equals(citizen.getUsername())) {
+                aspirasi.displaySummary();
+                adaAspirasi = true;
+            }
+        }
+
+        if (!adaAspirasi) {
+            System.out.println("  Belum ada aspirasi yang Anda kirim.");
+        }
+
+        System.out.println("╚══════════════════════════════════════════╝");
+    }
+
+    static void upvoteAspiration(Citizen citizen) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║              UPVOTE ASPIRASI             ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        if (aspirationMap.isEmpty()) {
+            System.out.println("  Tidak ada aspirasi untuk diupvote saat ini.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
+        }
+
+        for (Aspiration aspirasi : aspirationMap.values()) {
+            aspirasi.displaySummary();
+        }
+
+        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.print("  Masukkan ID aspirasi yang ingin diupvote: ");
+        String id = sc.nextLine().trim().toUpperCase();
+
+        if (!aspirationMap.containsKey(id)) {
+            System.out.println("  Aspirasi dengan ID " + id + " tidak ditemukan.");
+            return;
+        }
+
+        Aspiration aspirasi = aspirationMap.get(id);
+
+        if (aspirasi.getAuthor().equals(citizen.getUsername())) {
+            System.out.println("  Anda tidak dapat mengupvote aspirasi sendiri.");
+            return;
+        }
+
+        if (aspirasi.getStatus() == sigap.enums.Status.REJECTED) {
+            System.out.println("  Aspirasi ini sudah ditolak dan tidak dapat diupvote.");
+            return;
+        }
+
+        if (!aspirasi.addUpvote(citizen.getUsername())) {
+            System.out.println("  Anda sudah pernah mengupvote aspirasi ini sebelumnya.");
+            return;
+        }
+
+        System.out.println("  Terima kasih! Aspirasi " + id + " berhasil diupvote.");
+        System.out.println("  Total upvote sekarang: " + aspirasi.getUpvotes());
+    }
+
+    static void cariAspirasi() {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║               CARI ASPIRASI              ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+        System.out.print("  Masukkan kata kunci (judul/kategori/lokasi): ");
+        String keyword = sc.nextLine().trim().toLowerCase();
+
+        if (keyword.isEmpty()) {
+            System.out.println("  Kata kunci tidak boleh kosong.");
+            return;
+        }
+
+        boolean ditemukan = false;
+        for (Aspiration aspirasi : aspirationMap.values()) {
+            String teks = (aspirasi.getTitle() + " "
+                    + aspirasi.getDescription() + " "
+                    + aspirasi.getCategory() + " "
+                    + aspirasi.getLocation() + " "
+                    + aspirasi.getAuthor()).toLowerCase();
+
+            if (teks.contains(keyword)) {
+                aspirasi.displaySummary();
+                ditemukan = true;
+            }
+        }
+
+        if (!ditemukan) {
+            System.out.println("  Aspirasi dengan kata kunci '" + keyword + "' tidak ditemukan.");
+        }
+
+        System.out.println("╚══════════════════════════════════════════╝");
+    }
 
     static void dashboardAdmin(Admin admin) {
         boolean loggedIn = true;
@@ -445,9 +539,10 @@ public class MainFlow {
 
             switch (pilihan) {
                 case 1:
+                    verifikasiAspirasi(admin);
+                    break;
                 case 2:
-                    System.out.println();
-                    System.out.println("    Fitur ini akan tersedia di Phase 2.");
+                    tetapkanPrioritasAspirasi(admin);
                     break;
                 case 3:
                 case 4:
@@ -465,6 +560,107 @@ public class MainFlow {
         }
     }
 
+    static void verifikasiAspirasi(Admin admin) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║            VERIFIKASI ASPIRASI           ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        if (verificationQueue.isEmpty()) {
+            System.out.println("  Tidak ada aspirasi menunggu verifikasi.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
+        }
+
+        Aspiration aspirasi = verificationQueue.poll();
+        aspirasi.displayDetail();
+
+        System.out.println();
+        System.out.println("  [1] Setujui aspirasi");
+        System.out.println("  [2] Tolak aspirasi");
+        System.out.print("  Pilihan Anda: ");
+        int pilihan = bacaInt();
+
+        switch (pilihan) {
+            case 1:
+                aspirasi.setStatus(sigap.enums.Status.APPROVED);
+                System.out.println("  Aspirasi " + aspirasi.getId() + " disetujui.");
+                break;
+            case 2:
+                aspirasi.setStatus(sigap.enums.Status.REJECTED);
+                System.out.println("  Aspirasi " + aspirasi.getId() + " ditolak.");
+                break;
+            default:
+                System.out.println("  Pilihan tidak valid. Aspirasi dikembalikan ke antrean.");
+                verificationQueue.addFirst(aspirasi);
+                return;
+        }
+
+        System.out.println("  Status terbaru: " + aspirasi.getStatus().getLabel());
+    }
+
+    static void tetapkanPrioritasAspirasi(Admin admin) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║         PENENTUAN PRIORITAS              ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        boolean adaAspirasi = false;
+        for (Aspiration aspirasi : aspirationMap.values()) {
+            if (aspirasi.getStatus() == sigap.enums.Status.APPROVED
+                    || aspirasi.getStatus() == sigap.enums.Status.PENDING
+                    || aspirasi.getStatus() == sigap.enums.Status.ON_PROGRESS) {
+                aspirasi.displaySummary();
+                adaAspirasi = true;
+            }
+        }
+
+        if (!adaAspirasi) {
+            System.out.println("  Tidak ada aspirasi yang dapat diberi prioritas saat ini.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
+        }
+
+        System.out.print("  Masukkan ID aspirasi untuk ditetapkan prioritas: ");
+        String id = sc.nextLine().trim().toUpperCase();
+
+        if (!aspirationMap.containsKey(id)) {
+            System.out.println("  Aspirasi dengan ID " + id + " tidak ditemukan.");
+            return;
+        }
+
+        Aspiration aspirasi = aspirationMap.get(id);
+
+        if (aspirasi.getStatus() == sigap.enums.Status.REJECTED) {
+            System.out.println("  Aspirasi yang ditolak tidak dapat diberi prioritas.");
+            return;
+        }
+
+        System.out.println("  Pilih prioritas:");
+        System.out.println("    [1] LOW");
+        System.out.println("    [2] MEDIUM");
+        System.out.println("    [3] HIGH");
+        System.out.print("  Pilihan Anda: ");
+        int pilihan = bacaInt();
+
+        switch (pilihan) {
+            case 1:
+                aspirasi.setPriority(sigap.enums.Priority.LOW);
+                break;
+            case 2:
+                aspirasi.setPriority(sigap.enums.Priority.MEDIUM);
+                break;
+            case 3:
+                aspirasi.setPriority(sigap.enums.Priority.HIGH);
+                break;
+            default:
+                System.out.println("  Pilihan tidak valid. Prioritas tidak diubah.");
+                return;
+        }
+
+        System.out.println("  Prioritas aspirasi " + id + " berhasil diubah menjadi "
+                + aspirasi.getPriority().getLabel() + ".");
+    }
 
     static void dashboardInstitutionAdmin(InstitutionAdmin ia) {
         boolean loggedIn = true;
@@ -491,14 +687,13 @@ public class MainFlow {
         }
     }
 
-
     static int bacaInt() {
         try {
             int nilai = sc.nextInt();
-            sc.nextLine();  
+            sc.nextLine();
             return nilai;
         } catch (InputMismatchException e) {
-            sc.nextLine();    
+            sc.nextLine();
             System.out.println("Input harus berupa angka!");
             return -1;
         }

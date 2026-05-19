@@ -19,9 +19,9 @@ public class Citizen extends User {
         System.out.println("║  Role    : Warga / Citizen               ║");
         System.out.println("╠══════════════════════════════════════════╣");
         System.out.println("║  [1] Tambah Aspirasi Baru                ║");
-        System.out.println("║  [2] Lihat Aspirasi Saya   (Phase 2)     ║");
-        System.out.println("║  [3] Upvote Aspirasi       (Phase 2)     ║");
-        System.out.println("║  [4] Cari Aspirasi         (Phase 2)     ║");
+        System.out.println("║  [2] Lihat Aspirasi Saya                 ║");
+        System.out.println("║  [3] Upvote Aspirasi                     ║");
+        System.out.println("║  [4] Cari Aspirasi                       ║");
         System.out.println("║  [0] Logout                              ║");
         System.out.println("╚══════════════════════════════════════════╝");
     }
