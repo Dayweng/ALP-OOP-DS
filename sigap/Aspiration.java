@@ -66,23 +66,22 @@ public class Aspiration implements Comparable<Aspiration> {
    
     public void displayDetail() {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════════╗");
-        System.out.println("║              DETAIL ASPIRASI                 ║");
-        System.out.println("╠══════════════════════════════════════════════╣");
-        System.out.println("  ID Aspirasi  : " + id);
-        System.out.println("  Judul        : " + title);
-        System.out.println("  Kategori     : " + category);
-        System.out.println("  Lokasi       : " + location);
-        System.out.println("  Status       : " + status.getLabel());
-        System.out.println("  Prioritas    : " + priority.getLabel());
-        System.out.println("  Upvotes      : " + upvotes + " suara");
-        System.out.println("  Penulis      : " + author);
-        System.out.println("  Institusi    : " + institutionTarget);
-        System.out.println("  Dibuat       : " + createdAt);
+        System.out.println("╔══════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                             DETAIL ASPIRASI                          ║");
+        System.out.println("╚══════════════════════════════════════════════════════════════════════╝");
+        System.out.println(" ID Aspirasi  : " + id);
+        System.out.println(" Judul        : " + title);
+        System.out.println(" Kategori     : " + category);
+        System.out.println(" Lokasi       : " + location);
+        System.out.println(" Status       : " + status.getLabel());
+        System.out.println(" Prioritas    : " + priority.getLabel());
+        System.out.println(" Upvotes      : " + upvotes + " suara");
+        System.out.println(" Penulis      : " + author);
+        System.out.println(" Institusi    : " + institutionTarget);
+        System.out.println(" Dibuat       : " + createdAt);
         System.out.println("────────────────────────────────────────────────");
-        System.out.println("  Deskripsi    :");
-        System.out.println("  " + description);
-        System.out.println("╚══════════════════════════════════════════════╝");
+        System.out.println("Deskripsi    :");
+        System.out.println(description);
     }
 
    
@@ -93,6 +92,8 @@ public class Aspiration implements Comparable<Aspiration> {
                 category,
                 status.getLabel(),
                 upvotes);
+
+    
     }
 
    

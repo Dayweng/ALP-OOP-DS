@@ -429,34 +429,33 @@ public class MainFlow {
 
     static void tampilkanAspirasiCitizen(Citizen citizen) {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║         ASPIRASI SAYA (User)             ║");
-        System.out.println("╠══════════════════════════════════════════╣");
-
+        System.out.println("╔════════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                       ASPIRASI SAYA (User)                                 ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════════════════════════════════╝");
         boolean adaAspirasi = false;
         for (Aspiration aspirasi : aspirationMap.values()) {
             if (aspirasi.getAuthor().equals(citizen.getUsername())) {
                 aspirasi.displaySummary();
                 adaAspirasi = true;
+            
             }
         }
 
         if (!adaAspirasi) {
-            System.out.println("  Belum ada aspirasi yang Anda kirim.");
-        }
+            System.out.println("                            Belum ada aspirasi yang Anda kirim.                           ");
+            return;}
 
-        System.out.println("╚══════════════════════════════════════════╝");
+        
     }
 
     static void upvoteAspiration(Citizen citizen) {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║              UPVOTE ASPIRASI             ║");
-        System.out.println("╠══════════════════════════════════════════╣");
+        System.out.println("╔════════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                       UPVOTE ASPIRASI                                      ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════════════════════════════════╝");
 
         if (aspirationMap.isEmpty()) {
             System.out.println("  Tidak ada aspirasi untuk diupvote saat ini.");
-            System.out.println("╚══════════════════════════════════════════╝");
             return;
         }
 
@@ -464,7 +463,7 @@ public class MainFlow {
             aspirasi.displaySummary();
         }
 
-        System.out.println("╚══════════════════════════════════════════╝");
+
         System.out.print("  Masukkan ID aspirasi yang ingin diupvote: ");
         String id = sc.nextLine().trim().toUpperCase();
 
@@ -496,10 +495,10 @@ public class MainFlow {
 
     static void cariAspirasi() {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║               CARI ASPIRASI              ║");
-        System.out.println("╠══════════════════════════════════════════╣");
-        System.out.print("  Masukkan kata kunci (judul/kategori/lokasi): ");
+        System.out.println("╔════════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                       CARI ASPIRASI                                        ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════════════════════════════════╝");
+        System.out.print("Masukkan kata kunci (judul/kategori/lokasi):");
         String keyword = sc.nextLine().trim().toLowerCase();
 
         if (keyword.isEmpty()) {
@@ -522,10 +521,10 @@ public class MainFlow {
         }
 
         if (!ditemukan) {
-            System.out.println("  Aspirasi dengan kata kunci '" + keyword + "' tidak ditemukan.");
+            System.out.println("ASPIRASI DENGAN KATA KUNCI '" + keyword + "' TIDAK DITEMUKAN.");
         }
 
-        System.out.println("╚══════════════════════════════════════════╝");
+        
     }
 
     static void dashboardAdmin(Admin admin) {
@@ -564,15 +563,16 @@ public class MainFlow {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
         System.out.println("║            VERIFIKASI ASPIRASI           ║");
-        System.out.println("╠══════════════════════════════════════════╣");
+        System.out.println("╚══════════════════════════════════════════╝");
 
         if (verificationQueue.isEmpty()) {
             System.out.println("  Tidak ada aspirasi menunggu verifikasi.");
-            System.out.println("╚══════════════════════════════════════════╝");
             return;
         }
 
         Aspiration aspirasi = verificationQueue.poll();
+
+        
         aspirasi.displayDetail();
 
         System.out.println();
@@ -595,7 +595,7 @@ public class MainFlow {
                 verificationQueue.addFirst(aspirasi);
                 return;
         }
-
+    
         System.out.println("  Status terbaru: " + aspirasi.getStatus().getLabel());
     }
 
