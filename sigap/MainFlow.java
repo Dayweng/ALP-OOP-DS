@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.Scanner;
-import sigap.enums.Priority;
+import sigap.enums.Status;
 
 
 public class MainFlow {
@@ -97,8 +97,6 @@ public class MainFlow {
                 "Jl. Pahlawan No. 12, Kec. Sidoarjo",
                 "budi"
         );
-        asp1.setPriority(Priority.HIGH);
-
         Aspiration asp2 = new Aspiration(
                 generateId(),
                 "Kurangnya Dokter di Puskesmas Waru",
@@ -109,8 +107,6 @@ public class MainFlow {
                 "Puskesmas Waru, Kec. Waru, Sidoarjo",
                 "siti"
         );
-        asp2.setPriority(Priority.MEDIUM);
-
         Aspiration asp3 = new Aspiration(
                 generateId(),
                 "Sampah Menumpuk di Bantaran Sungai Porong",
@@ -121,9 +117,6 @@ public class MainFlow {
                 "Bantaran Sungai Porong, Kec. Porong, Sidoarjo",
                 "budi"
         );
-        asp3.setPriority(Priority.MEDIUM);
-
-
         aspirationMap.put(asp1.getId(), asp1);
         aspirationMap.put(asp2.getId(), asp2);
         aspirationMap.put(asp3.getId(), asp3);
@@ -183,7 +176,6 @@ public class MainFlow {
     }
 
 
-    //#region registrasi 
     static void prosesRegister() {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
@@ -317,7 +309,7 @@ public class MainFlow {
                     prosesTambahAspirasi(citizen);
                     break;
                 case 2:
-                    tampilkanAspirasiCitizen(citizen);
+                    tampilkanSemuaAspirasi();
                     break;
                 case 3:
                     upvoteAspiration(citizen);
@@ -335,7 +327,6 @@ public class MainFlow {
         }
     }
 
-    //#region tambah aspirasi
     static void prosesTambahAspirasi(Citizen citizen) {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
@@ -391,7 +382,6 @@ public class MainFlow {
             return;
         }
 
-        // Konfirmasi data aspirasi sebelum disimpan
         System.out.println();
         System.out.println("  ── Konfirmasi Aspirasi ──────────────────");
         System.out.println("  Judul     : " + title);
@@ -427,22 +417,18 @@ public class MainFlow {
         System.out.println("Simpan ID Aspirasi Anda: " + newId);
     }
 
-    static void tampilkanAspirasiCitizen(Citizen citizen) {
+    static void tampilkanSemuaAspirasi() {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║         ASPIRASI SAYA (User)             ║");
+        System.out.println("║         DAFTAR ASPIRASI PUBLIK           ║");
         System.out.println("╠══════════════════════════════════════════╣");
 
-        boolean adaAspirasi = false;
-        for (Aspiration aspirasi : aspirationMap.values()) {
-            if (aspirasi.getAuthor().equals(citizen.getUsername())) {
+        if (aspirationMap.isEmpty()) {
+            System.out.println("  Belum ada aspirasi yang tersedia.");
+        } else {
+            for (Aspiration aspirasi : aspirationMap.values()) {
                 aspirasi.displaySummary();
-                adaAspirasi = true;
             }
-        }
-
-        if (!adaAspirasi) {
-            System.out.println("  Belum ada aspirasi yang Anda kirim.");
         }
 
         System.out.println("╚══════════════════════════════════════════╝");
@@ -499,33 +485,23 @@ public class MainFlow {
         System.out.println("╔══════════════════════════════════════════╗");
         System.out.println("║               CARI ASPIRASI              ║");
         System.out.println("╠══════════════════════════════════════════╣");
-        System.out.print("  Masukkan kata kunci (judul/kategori/lokasi): ");
-        String keyword = sc.nextLine().trim().toLowerCase();
+        System.out.print("  Masukkan ID laporan: ");
+        String id = sc.nextLine().trim().toUpperCase();
 
-        if (keyword.isEmpty()) {
-            System.out.println("  Kata kunci tidak boleh kosong.");
+        if (id.isEmpty()) {
+            System.out.println("  ID tidak boleh kosong.");
+            System.out.println("╚══════════════════════════════════════════╝");
             return;
         }
 
-        boolean ditemukan = false;
-        for (Aspiration aspirasi : aspirationMap.values()) {
-            String teks = (aspirasi.getTitle() + " "
-                    + aspirasi.getDescription() + " "
-                    + aspirasi.getCategory() + " "
-                    + aspirasi.getLocation() + " "
-                    + aspirasi.getAuthor()).toLowerCase();
-
-            if (teks.contains(keyword)) {
-                aspirasi.displaySummary();
-                ditemukan = true;
-            }
+        Aspiration aspirasi = aspirationMap.get(id);
+        if (aspirasi == null) {
+            System.out.println("  Aspirasi dengan ID '" + id + "' tidak ditemukan.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
         }
 
-        if (!ditemukan) {
-            System.out.println("  Aspirasi dengan kata kunci '" + keyword + "' tidak ditemukan.");
-        }
-
-        System.out.println("╚══════════════════════════════════════════╝");
+        aspirasi.displayDetail();
     }
 
     static void dashboardAdmin(Admin admin) {
@@ -605,61 +581,120 @@ public class MainFlow {
         System.out.println("║         PENENTUAN PRIORITAS              ║");
         System.out.println("╠══════════════════════════════════════════╣");
 
-        boolean adaAspirasi = false;
-        for (Aspiration aspirasi : aspirationMap.values()) {
-            if (aspirasi.getStatus() == sigap.enums.Status.APPROVED
-                    || aspirasi.getStatus() == sigap.enums.Status.PENDING
-                    || aspirasi.getStatus() == sigap.enums.Status.ON_PROGRESS) {
-                aspirasi.displaySummary();
-                adaAspirasi = true;
+        LinkedList<Aspiration> siap = new LinkedList<>();
+        for (Aspiration asp : aspirationMap.values()) {
+            if (asp.getStatus() == Status.APPROVED && !asp.isScoreLocked()) {
+                siap.add(asp);
             }
         }
 
-        if (!adaAspirasi) {
-            System.out.println("  Tidak ada aspirasi yang dapat diberi prioritas saat ini.");
+        if (siap.isEmpty()) {
+            System.out.println("  Tidak ada aspirasi siap diprioritaskan.");
+            System.out.println("  Pastikan ada aspirasi berstatus DISETUJUI.");
             System.out.println("╚══════════════════════════════════════════╝");
             return;
         }
 
-        System.out.print("  Masukkan ID aspirasi untuk ditetapkan prioritas: ");
+        System.out.printf("  %-8s | %-30s | %-15s | %s%n", "ID", "Judul", "Kategori", "Votes");
+        System.out.println("  " + "─".repeat(66));
+        for (Aspiration asp : siap) {
+            System.out.printf("  %-8s | %-30s | %-15s | %d%n",
+                    asp.getId(),
+                    asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle(),
+                    asp.getCategory(),
+                    asp.getUpvotes());
+        }
+
+        System.out.print("\n  ID Aspirasi yang akan diprioritaskan (0=batal): ");
         String id = sc.nextLine().trim().toUpperCase();
+        if (id.equals("0")) return;
 
-        if (!aspirationMap.containsKey(id)) {
-            System.out.println("  Aspirasi dengan ID " + id + " tidak ditemukan.");
+        Aspiration target = aspirationMap.get(id);
+        if (target == null || target.getStatus() != Status.APPROVED || target.isScoreLocked()) {
+            System.out.println("  ID tidak valid atau aspirasi tidak memenuhi syarat.");
             return;
         }
 
-        Aspiration aspirasi = aspirationMap.get(id);
+        target.displayDetail();
 
-        if (aspirasi.getStatus() == sigap.enums.Status.REJECTED) {
-            System.out.println("  Aspirasi yang ditolak tidak dapat diberi prioritas.");
+        System.out.println();
+        System.out.println("  ── Komponen Skor Otomatis ──────────────────────");
+        System.out.printf("  S_scale (15%%) : %.2f  [Skala Dampak — %d upvotes]%n",
+                target.calcSScale(), target.getUpvotes());
+        System.out.printf("  S_cat   (15%%) : %.2f  [Bobot Kategori: %s]%n",
+                target.calcSCat(), target.getCategory());
+        System.out.printf("  S_sys   (15%%) : %.2f  [Aging / Waktu Tunggu]%n",
+                target.calcSSys());
+
+        System.out.println();
+        System.out.println("  ── Input Admin ─────────────────────────────────");
+        System.out.println("  S_auth (30%) — Otoritas Admin [1-10]");
+        System.out.println("  Nilai RENDAH = laporan dilebih-lebihkan.");
+        System.out.println("  Nilai TINGGI = darurat, butuh penanganan segera.");
+        System.out.print("  S_auth = ");
+        double sAuth = bacaDouble(1, 10);
+
+        System.out.println();
+        System.out.println("  S_safe (25%) — Tingkat Ancaman Keselamatan [1-10]");
+        System.out.println("  1=Tidak berbahaya   5=Cukup berbahaya   10=Mengancam nyawa");
+        System.out.print("  S_safe = ");
+        double sSafe = bacaDouble(1, 10);
+
+        double preview = target.previewScore(sAuth, sSafe);
+        String tierLabel;
+        if      (preview >= 7.0) tierLabel = "TINGGI";
+        else if (preview >= 4.0) tierLabel = "SEDANG";
+        else                     tierLabel = "RENDAH";
+
+        System.out.println();
+        System.out.println("  ── Kalkulasi Skor Final ────────────────────────");
+        System.out.printf("  S_auth  × 0.30 = %.3f%n", sAuth               * 0.30);
+        System.out.printf("  S_safe  × 0.25 = %.3f%n", sSafe               * 0.25);
+        System.out.printf("  S_scale × 0.15 = %.3f%n", target.calcSScale() * 0.15);
+        System.out.printf("  S_cat   × 0.15 = %.3f%n", target.calcSCat()   * 0.15);
+        System.out.printf("  S_sys   × 0.15 = %.3f%n", target.calcSSys()   * 0.15);
+        System.out.println("  ──────────────────────────────────────────────");
+        System.out.printf("  Total Score    = %.2f / 10.0  [%s]%n", preview, tierLabel);
+
+        System.out.println();
+        System.out.println("  ── Distribusi ke Institusi ─────────────────────");
+        if (!institutionMap.isEmpty()) {
+            String[] instNames = institutionMap.keySet().toArray(new String[0]);
+            for (int i = 0; i < instNames.length; i++) {
+                System.out.printf("  [%d] %s%n", i + 1, instNames[i]);
+            }
+            System.out.printf("  [%d] Lewati (tentukan nanti)%n", instNames.length + 1);
+            System.out.print("  Pilih institusi: ");
+            int instPilihan = bacaInt();
+            if (instPilihan >= 1 && instPilihan <= instNames.length) {
+                target.setInstitutionTarget(instNames[instPilihan - 1]);
+            }
+        }
+
+        System.out.println();
+        System.out.print("  Kunci skor dan simpan prioritas? (y/n): ");
+        String konfirmasi = sc.nextLine().trim().toLowerCase();
+        if (!konfirmasi.equals("y") && !konfirmasi.equals("ya")) {
+            System.out.println("  Penentuan prioritas dibatalkan.");
             return;
         }
 
-        System.out.println("  Pilih prioritas:");
-        System.out.println("    [1] LOW");
-        System.out.println("    [2] MEDIUM");
-        System.out.println("    [3] HIGH");
-        System.out.print("  Pilihan Anda: ");
-        int pilihan = bacaInt();
+        target.lockScore(sAuth, sSafe);
 
-        switch (pilihan) {
-            case 1:
-                aspirasi.setPriority(sigap.enums.Priority.LOW);
-                break;
-            case 2:
-                aspirasi.setPriority(sigap.enums.Priority.MEDIUM);
-                break;
-            case 3:
-                aspirasi.setPriority(sigap.enums.Priority.HIGH);
-                break;
-            default:
-                System.out.println("  Pilihan tidak valid. Prioritas tidak diubah.");
-                return;
+        if (!target.getInstitutionTarget().equals("-")) {
+            Institution inst = institutionMap.get(target.getInstitutionTarget());
+            if (inst != null) inst.addAspiration(target);
         }
 
-        System.out.println("  Prioritas aspirasi " + id + " berhasil diubah menjadi "
-                + aspirasi.getPriority().getLabel() + ".");
+        System.out.println();
+        System.out.println("  ╔══════════════════════════════════════════╗");
+        System.out.println("  ║    PRIORITAS BERHASIL DIKUNCI!           ║");
+        System.out.println("  ╚══════════════════════════════════════════╝");
+        System.out.printf("    ID        : %s%n",          target.getId());
+        System.out.printf("    Skor      : %.2f / 10.0%n", target.getTotalScore());
+        System.out.printf("    Prioritas : %s%n",          target.getPriority().getLabel());
+        System.out.printf("    Institusi : %s%n",          target.getInstitutionTarget());
+        System.out.println("    [Skor tidak dapat diubah oleh siapapun]");
     }
 
     static void dashboardInstitutionAdmin(InstitutionAdmin ia) {
@@ -696,6 +731,20 @@ public class MainFlow {
             sc.nextLine();
             System.out.println("Input harus berupa angka!");
             return -1;
+        }
+    }
+
+    static double bacaDouble(double min, double max) {
+        while (true) {
+            try {
+                double val = sc.nextDouble();
+                sc.nextLine();
+                if (val >= min && val <= max) return val;
+                System.out.printf("  Masukkan angka antara %.0f - %.0f: ", min, max);
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.print("  Input harus berupa angka: ");
+            }
         }
     }
 }
