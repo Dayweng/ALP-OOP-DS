@@ -617,14 +617,14 @@ public class MainFlow {
 
         target.displayDetail();
 
-        System.out.println();
-        System.out.println("  ── Komponen Skor Otomatis ──────────────────────");
-        System.out.printf("  S_scale (15%%) : %.2f  [Skala Dampak — %d upvotes]%n",
-                target.calcSScale(), target.getUpvotes());
-        System.out.printf("  S_cat   (15%%) : %.2f  [Bobot Kategori: %s]%n",
-                target.calcSCat(), target.getCategory());
-        System.out.printf("  S_sys   (15%%) : %.2f  [Aging / Waktu Tunggu]%n",
-                target.calcSSys());
+        // System.out.println();
+        // System.out.println("  ── Komponen Skor Otomatis ──────────────────────");
+        // System.out.printf("  S_scale (15%%) : %.2f  [Skala Dampak — %d upvotes]%n",
+        //         target.calcSScale(), target.getUpvotes());
+        // System.out.printf("  S_cat   (15%%) : %.2f  [Bobot Kategori: %s]%n",
+        //         target.calcSCat(), target.getCategory());
+        // System.out.printf("  S_sys   (15%%) : %.2f  [Aging / Waktu Tunggu]%n",
+        //         target.calcSSys());
 
         System.out.println();
         System.out.println("  ── Input Admin ─────────────────────────────────");
@@ -648,11 +648,11 @@ public class MainFlow {
 
         System.out.println();
         System.out.println("  ── Kalkulasi Skor Final ────────────────────────");
-        System.out.printf("  S_auth  × 0.30 = %.3f%n", sAuth               * 0.30);
-        System.out.printf("  S_safe  × 0.25 = %.3f%n", sSafe               * 0.25);
-        System.out.printf("  S_scale × 0.15 = %.3f%n", target.calcSScale() * 0.15);
-        System.out.printf("  S_cat   × 0.15 = %.3f%n", target.calcSCat()   * 0.15);
-        System.out.printf("  S_sys   × 0.15 = %.3f%n", target.calcSSys()   * 0.15);
+        System.out.printf("  S_auth  x 0.30 = %.3f%n", sAuth               * 0.30);
+        System.out.printf("  S_safe  x 0.25 = %.3f%n", sSafe               * 0.25);
+        System.out.printf("  S_scale x 0.15 = %.3f%n", target.calcSScale() * 0.15);
+        System.out.printf("  S_cat   x 0.15 = %.3f%n", target.calcSCat()   * 0.15);
+        System.out.printf("  S_sys   x 0.15 = %.3f%n", target.calcSSys()   * 0.15);
         System.out.println("  ──────────────────────────────────────────────");
         System.out.printf("  Total Score    = %.2f / 10.0  [%s]%n", preview, tierLabel);
 
