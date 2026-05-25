@@ -1,8 +1,11 @@
 package sigap;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import sigap.enums.Status;
 
@@ -521,6 +524,8 @@ public class MainFlow {
                     tetapkanPrioritasAspirasi(admin);
                     break;
                 case 3:
+                    lihatAntreanDualQueue();
+                    break;
                 case 4:
                 case 5:
                     System.out.println();
@@ -718,6 +723,46 @@ public class MainFlow {
                     break;
                 default:
                     System.out.println("   Pilihan tidak valid!");
+            }
+        }
+    }
+
+    static void lihatAntreanDualQueue() {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════════════╗");
+        System.out.println("║             DUAL-QUEUE SYSTEM VIEW               ║");
+        System.out.println("╚══════════════════════════════════════════════════╝");
+
+
+        System.out.println();
+        System.out.println(" ANTREAN PRIORITAS ");
+        if (institutionMap.isEmpty()) {
+            System.out.println("  │  (tidak ada institusi)");
+        } else {
+            for (Institution inst : institutionMap.values()) {
+                System.out.println("  │");
+                System.out.println("  │  " + inst.getNamaInstitution() + "  (" + inst.getJumlahAntrian() + " laporan)");
+
+                if (inst.getJumlahAntrian() == 0) {
+                    System.out.println("  │    (kosong)");
+                } else {
+                    List<Aspiration> sorted = new ArrayList<>(inst.getQueue());
+                    Collections.sort(sorted);
+
+                    int rank = 1;
+                    for (Aspiration asp : sorted) {
+                        String judul = asp.getTitle();
+                        if (judul.length() > 18) {
+                            judul = judul.substring(0, 18) + "..";
+                        }
+                        System.out.println("  │    #" + rank
+                                + "  " + asp.getId()
+                                + " | " + judul
+                                + " | Skor: " + String.format("%.2f", asp.getTotalScore())
+                                + " | " + asp.getPriority().getLabel());
+                        rank++;
+                    }
+                }
             }
         }
     }
