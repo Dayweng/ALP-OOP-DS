@@ -27,6 +27,8 @@ public class Aspiration implements Comparable<Aspiration> {
     private double  sSafe;
     private double  totalScore;
     private boolean scoreLocked;
+    private boolean distributed;
+    private String  closingStatement;
 
 
     public Aspiration(String id, String title, String description,
@@ -45,10 +47,12 @@ public class Aspiration implements Comparable<Aspiration> {
         this.upvotedUsers = new LinkedList<>();
         this.comments     = new LinkedList<>();
 
-        this.sAuth       = 0;
-        this.sSafe       = 0;
-        this.totalScore  = 0;
-        this.scoreLocked = false;
+        this.sAuth            = 0;
+        this.sSafe            = 0;
+        this.totalScore       = 0;
+        this.scoreLocked      = false;
+        this.distributed      = false;
+        this.closingStatement = "-";
 
         this.createdAt = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
     }
@@ -127,6 +131,11 @@ public class Aspiration implements Comparable<Aspiration> {
         System.out.println("────────────────────────────────────────────────");
         System.out.println("  Deskripsi    :");
         System.out.println("  " + description);
+        if (status == Status.DONE && !closingStatement.equals("-")) {
+            System.out.println("────────────────────────────────────────────────");
+            System.out.println("  Closing Statement:");
+            System.out.println("  " + closingStatement);
+        }
         if (scoreLocked) {
             System.out.println("────────────────────────────────────────────────");
             System.out.println("  Rincian Skor  [TERKUNCI — tidak dapat diubah]");
@@ -175,6 +184,10 @@ public class Aspiration implements Comparable<Aspiration> {
         return Priority.LOW;
     }
 
-    public void setStatus(Status status)                { this.status            = status; }
-    public void setInstitutionTarget(String instTarget) { this.institutionTarget = instTarget; }
+    public boolean isDistributed()                           { return distributed; }
+    public String  getClosingStatement()                     { return closingStatement; }
+    public void    setStatus(Status status)                  { this.status            = status; }
+    public void    setInstitutionTarget(String instTarget)   { this.institutionTarget = instTarget; }
+    public void    setDistributed(boolean distributed)       { this.distributed       = distributed; }
+    public void    setClosingStatement(String stmt)          { this.closingStatement  = stmt; }
 }

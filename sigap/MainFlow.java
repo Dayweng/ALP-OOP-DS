@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import sigap.enums.Status;
 
@@ -16,6 +17,7 @@ public class MainFlow {
     static LinkedList<Aspiration> verificationQueue = new LinkedList<>();
     static HashMap<String, Institution> institutionMap = new HashMap<>();
 
+    
     
     static int aspirationCounter = 1;
     static Scanner sc = new Scanner(System.in);
@@ -527,9 +529,10 @@ public class MainFlow {
                     lihatAntreanDualQueue();
                     break;
                 case 4:
+                    dashboardStatistik(admin);
+                    break;
                 case 5:
-                    System.out.println();
-                    System.out.println("    Fitur ini akan tersedia di Phase 3.");
+                    distribusiInstitusi(admin);
                     break;
                 case 0:
                     admin.logout();
@@ -662,21 +665,6 @@ public class MainFlow {
         System.out.printf("  Total Score    = %.2f / 10.0  [%s]%n", preview, tierLabel);
 
         System.out.println();
-        System.out.println("  ── Distribusi ke Institusi ─────────────────────");
-        if (!institutionMap.isEmpty()) {
-            String[] instNames = institutionMap.keySet().toArray(new String[0]);
-            for (int i = 0; i < instNames.length; i++) {
-                System.out.printf("  [%d] %s%n", i + 1, instNames[i]);
-            }
-            System.out.printf("  [%d] Lewati (tentukan nanti)%n", instNames.length + 1);
-            System.out.print("  Pilih institusi: ");
-            int instPilihan = bacaInt();
-            if (instPilihan >= 1 && instPilihan <= instNames.length) {
-                target.setInstitutionTarget(instNames[instPilihan - 1]);
-            }
-        }
-
-        System.out.println();
         System.out.print("  Kunci skor dan simpan prioritas? (y/n): ");
         String konfirmasi = sc.nextLine().trim().toLowerCase();
         if (!konfirmasi.equals("y") && !konfirmasi.equals("ya")) {
@@ -686,11 +674,6 @@ public class MainFlow {
 
         target.lockScore(sAuth, sSafe);
 
-        if (!target.getInstitutionTarget().equals("-")) {
-            Institution inst = institutionMap.get(target.getInstitutionTarget());
-            if (inst != null) inst.addAspiration(target);
-        }
-
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════════╗");
         System.out.println("  ║    PRIORITAS BERHASIL DIKUNCI!           ║");
@@ -698,8 +681,8 @@ public class MainFlow {
         System.out.printf("    ID        : %s%n",          target.getId());
         System.out.printf("    Skor      : %.2f / 10.0%n", target.getTotalScore());
         System.out.printf("    Prioritas : %s%n",          target.getPriority().getLabel());
-        System.out.printf("    Institusi : %s%n",          target.getInstitutionTarget());
         System.out.println("    [Skor tidak dapat diubah oleh siapapun]");
+        System.out.println("    Gunakan menu [5] Distribusi Institusi untuk mengirim laporan ini.");
     }
 
     static void dashboardInstitutionAdmin(InstitutionAdmin ia) {
@@ -713,9 +696,13 @@ public class MainFlow {
 
             switch (pilihan) {
                 case 1:
+                    prosesLaporanInstitusi(ia);
+                    break;
                 case 2:
-                    System.out.println();
-                    System.out.println("    Fitur ini akan tersedia di Phase 3.");
+                    updateStatusLaporan(ia);
+                    break;
+                case 3:
+                    registrasiAdminInstitusi(ia);
                     break;
                 case 0:
                     ia.logout();
@@ -725,6 +712,265 @@ public class MainFlow {
                     System.out.println("   Pilihan tidak valid!");
             }
         }
+    }
+
+    static void distribusiInstitusi(Admin admin) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║          DISTRIBUSI KE INSTITUSI         ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        List<Aspiration> siap = new ArrayList<>();
+        for (Aspiration asp : aspirationMap.values()) {
+            if (asp.isScoreLocked() && !asp.isDistributed()) siap.add(asp);
+        }
+
+        if (siap.isEmpty()) {
+            System.out.println("  Tidak ada laporan yang siap didistribusi.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
+        }
+
+        System.out.printf("  %-8s | %-30s | %-10s | %s%n", "ID", "Judul", "Prioritas", "Skor");
+        System.out.println("  " + "─".repeat(62));
+        for (Aspiration asp : siap) {
+            String judul = asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
+            System.out.printf("  %-8s | %-30s | %-10s | %.2f%n",
+                    asp.getId(), judul, asp.getPriority().getLabel(), asp.getTotalScore());
+        }
+        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.print("  ID laporan (0=batal): ");
+        String id = sc.nextLine().trim().toUpperCase();
+        if (id.equals("0")) return;
+
+        Aspiration target = aspirationMap.get(id);
+        if (target == null || !target.isScoreLocked() || target.isDistributed()) {
+            System.out.println("  ID tidak valid atau laporan sudah didistribusi.");
+            return;
+        }
+
+        if (institutionMap.isEmpty()) {
+            System.out.println("  Tidak ada institusi terdaftar.");
+            return;
+        }
+
+        System.out.println();
+        String[] names = institutionMap.keySet().toArray(new String[0]);
+        for (int i = 0; i < names.length; i++) {
+            System.out.printf("  [%d] %s%n", i + 1, names[i]);
+        }
+        System.out.print("  Pilih institusi tujuan: ");
+        int pilihan = bacaInt();
+        if (pilihan < 1 || pilihan > names.length) {
+            System.out.println("  Pilihan tidak valid. Distribusi dibatalkan.");
+            return;
+        }
+
+        String instName = names[pilihan - 1];
+        Institution inst = institutionMap.get(instName);
+        target.setInstitutionTarget(instName);
+        inst.addAspiration(target);
+        target.setDistributed(true);
+
+        System.out.println();
+        System.out.println("  Laporan " + target.getId() + " berhasil dikirim ke " + instName + ".");
+    }
+
+    static void prosesLaporanInstitusi(InstitutionAdmin ia) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║         PROSES LAPORAN INSTITUSI         ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        Institution inst = institutionMap.get(ia.getInstitutionName());
+        if (inst == null || inst.getJumlahAntrian() == 0) {
+            System.out.println("  Tidak ada laporan dalam antrean institusi Anda.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
+        }
+
+        Aspiration laporan = inst.prosesAspirasi();
+        laporan.displayDetail();
+
+        System.out.println();
+        System.out.println("  [1] Tandai Sedang Diproses");
+        System.out.println("  [0] Kembalikan ke antrean");
+        System.out.print("  Pilihan Anda: ");
+        int pilihan = bacaInt();
+
+        if (pilihan == 1) {
+            laporan.setStatus(Status.ON_PROGRESS);
+            System.out.println("  Status laporan " + laporan.getId() + " diperbarui: Sedang Diproses.");
+        } else {
+            inst.addAspiration(laporan);
+            System.out.println("  Laporan dikembalikan ke antrean.");
+        }
+    }
+
+    static void updateStatusLaporan(InstitutionAdmin ia) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║         UPDATE STATUS LAPORAN            ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+
+        List<Aspiration> onProgress = new ArrayList<>();
+        for (Aspiration asp : aspirationMap.values()) {
+            if (asp.getInstitutionTarget().equals(ia.getInstitutionName())
+                    && asp.getStatus() == Status.ON_PROGRESS) {
+                onProgress.add(asp);
+            }
+        }
+
+        if (onProgress.isEmpty()) {
+            System.out.println("  Tidak ada laporan sedang diproses oleh institusi Anda.");
+            System.out.println("╚══════════════════════════════════════════╝");
+            return;
+        }
+
+        System.out.printf("  %-8s | %-30s | %s%n", "ID", "Judul", "Upvotes");
+        System.out.println("  " + "─".repeat(55));
+        for (Aspiration asp : onProgress) {
+            String judul = asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
+            System.out.printf("  %-8s | %-30s | %d%n", asp.getId(), judul, asp.getUpvotes());
+        }
+        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.print("  ID laporan yang akan ditutup (0=batal): ");
+        String id = sc.nextLine().trim().toUpperCase();
+        if (id.equals("0")) return;
+
+        Aspiration target = aspirationMap.get(id);
+        if (target == null
+                || !target.getInstitutionTarget().equals(ia.getInstitutionName())
+                || target.getStatus() != Status.ON_PROGRESS) {
+            System.out.println("  ID tidak valid atau laporan tidak memenuhi syarat.");
+            return;
+        }
+
+        System.out.println();
+        System.out.print("  Closing statement (apa yang telah dilakukan): ");
+        String stmt = sc.nextLine().trim();
+        if (stmt.isEmpty()) {
+            System.out.println("  Closing statement tidak boleh kosong.");
+            return;
+        }
+
+        System.out.print("  Bukti penyelesaian (URL/deskripsi foto): ");
+        String bukti = sc.nextLine().trim();
+        if (bukti.isEmpty()) bukti = "(tidak ada)";
+
+        target.setClosingStatement(stmt);
+        target.setStatus(Status.DONE);
+
+        System.out.println();
+        System.out.println("  ╔══════════════════════════════════════╗");
+        System.out.println("  ║     LAPORAN DITANDAI SELESAI!        ║");
+        System.out.println("  ╚══════════════════════════════════════╝");
+        System.out.println("    ID        : " + target.getId());
+        System.out.println("    Statement : " + stmt);
+        System.out.println("    Bukti     : " + bukti);
+        System.out.println("  [NOTIF] Pelapor " + target.getAuthor() + " telah diberitahu.");
+        System.out.println("  [INFO]  Laporan dianggap selesai jika tidak ada komplain dalam 3x24 jam.");
+    }
+
+    static void registrasiAdminInstitusi(InstitutionAdmin ia) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║       REGISTRASI ADMIN INSTITUSI         ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+        System.out.println("  Institusi : " + ia.getInstitutionName());
+        System.out.println();
+
+        System.out.print("  Nama Admin   : ");
+        String nama = sc.nextLine().trim();
+        if (nama.isEmpty()) {
+            System.out.println("  Nama tidak boleh kosong.");
+            return;
+        }
+
+        System.out.print("  Username     : ");
+        String username = sc.nextLine().trim().toLowerCase();
+        if (username.isEmpty() || username.contains(" ")) {
+            System.out.println("  Username tidak valid.");
+            return;
+        }
+        if (userMap.containsKey(username)) {
+            System.out.println("  Username '" + username + "' sudah digunakan.");
+            return;
+        }
+
+        System.out.print("  Password     : ");
+        String password = sc.nextLine().trim();
+        if (password.length() < 6) {
+            System.out.println("  Password minimal 6 karakter.");
+            return;
+        }
+
+        InstitutionAdmin adminBaru = new InstitutionAdmin(username, password, nama, ia.getInstitutionName());
+        userMap.put(username, adminBaru);
+
+        System.out.println();
+        System.out.println("  ╔══════════════════════════════════════╗");
+        System.out.println("  ║   AKUN ADMIN INSTITUSI DIBUAT!       ║");
+        System.out.println("  ╚══════════════════════════════════════╝");
+        System.out.println("    Nama      : " + nama);
+        System.out.println("    Username  : " + username);
+        System.out.println("    Institusi : " + ia.getInstitutionName());
+    }
+
+    static void dashboardStatistik(Admin admin) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════════╗");
+        System.out.println("║           DASHBOARD STATISTIK SIGAP          ║");
+        System.out.println("╠══════════════════════════════════════════════╣");
+
+        int total = aspirationMap.size();
+        int done = 0, pending = 0, onProgress = 0;
+        Aspiration topUpvote = null;
+        HashMap<String, Integer> perInstitusi = new HashMap<>();
+        HashMap<String, Integer> perKategori  = new HashMap<>();
+
+        for (Aspiration asp : aspirationMap.values()) {
+            Status s = asp.getStatus();
+            if      (s == Status.DONE)        done++;
+            else if (s == Status.PENDING)     pending++;
+            else if (s == Status.ON_PROGRESS) onProgress++;
+
+            String inst = asp.getInstitutionTarget();
+            if (!inst.equals("-")) perInstitusi.merge(inst, 1, Integer::sum);
+
+            perKategori.merge(asp.getCategory(), 1, Integer::sum);
+
+            if (topUpvote == null || asp.getUpvotes() > topUpvote.getUpvotes()) topUpvote = asp;
+        }
+
+        String trending = "-";
+        int maxKat = 0;
+        for (Map.Entry<String, Integer> e : perKategori.entrySet()) {
+            if (e.getValue() > maxKat) { maxKat = e.getValue(); trending = e.getKey(); }
+        }
+
+        System.out.printf("  Total Laporan      : %d%n", total);
+        System.out.printf("  Selesai            : %d%n", done);
+        System.out.printf("  Sedang Diproses    : %d%n", onProgress);
+        System.out.printf("  Pending            : %d%n", pending);
+        System.out.println();
+        System.out.println("  ── Per Institusi ──────────────────────────────");
+        if (perInstitusi.isEmpty()) {
+            System.out.println("  (belum ada laporan yang didistribusi)");
+        } else {
+            for (Map.Entry<String, Integer> e : perInstitusi.entrySet()) {
+                System.out.printf("  %-35s : %d laporan%n", e.getKey(), e.getValue());
+            }
+        }
+        System.out.println();
+        if (topUpvote != null) {
+            System.out.println("  ── Upvote Tertinggi ───────────────────────────");
+            System.out.printf("  %s | %s | %d votes%n",
+                    topUpvote.getId(), topUpvote.getTitle(), topUpvote.getUpvotes());
+        }
+        System.out.println();
+        System.out.printf("  Trending Issue     : %s (%d laporan)%n", trending, maxKat);
+        System.out.println("╚══════════════════════════════════════════════╝");
     }
 
     static void lihatAntreanDualQueue() {

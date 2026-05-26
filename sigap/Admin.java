@@ -24,8 +24,8 @@ public class Admin extends User {
         System.out.println("║  [1] Verifikasi Aspirasi                 ║");
         System.out.println("║  [2] Penentuan Prioritas                 ║");
         System.out.println("║  [3] Lihat Antrean Dual-Queue            ║");
-        System.out.println("║  [4] Dashboard Statistik   (Phase 3)     ║");
-        System.out.println("║  [5] Tambah Admin Baru     (Phase 3)     ║");
+        System.out.println("║  [4] Dashboard Statistik                 ║");
+        System.out.println("║  [5] Distribusi Institusi                ║");
         System.out.println("║  [0] Logout                              ║");
         System.out.println("╚══════════════════════════════════════════╝");
     }

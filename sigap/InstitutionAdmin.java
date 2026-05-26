@@ -19,8 +19,9 @@ public class InstitutionAdmin extends User {
         System.out.println("║  Halo, " + getNama() + "!");
         System.out.println("║  Institusi : " + institutionName);
         System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  [1] Proses Laporan        (Phase 3)     ║");
-        System.out.println("║  [2] Update Status Laporan (Phase 3)     ║");
+        System.out.println("║  [1] Proses Laporan                      ║");
+        System.out.println("║  [2] Update Status Laporan               ║");
+        System.out.println("║  [3] Registrasi Admin Institusi          ║");
         System.out.println("║  [0] Logout                              ║");
         System.out.println("╚══════════════════════════════════════════╝");
     }
