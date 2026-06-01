@@ -18,6 +18,10 @@ public class Institution {
     public Aspiration prosesAspirasi() {
         return queue.poll();
     }
+
+    public boolean removeAspiration(Aspiration aspiration) {
+        return queue.remove(aspiration);
+    }
     public Aspiration lihatAntriTeratas() {
         return queue.peek();
     }

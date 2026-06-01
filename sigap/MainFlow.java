@@ -751,6 +751,9 @@ public class MainFlow {
                     updateStatusLaporan(ia);
                     break;
                 case 3:
+                    lihatRiwayatInstitusi(ia);
+                    break;
+                case 4:
                     registrasiAdminInstitusi(ia);
                     break;
                 case 0:
@@ -839,23 +842,46 @@ public class MainFlow {
             return;
         }
 
-        Aspiration laporan = inst.prosesAspirasi();
+        List<Aspiration> sorted = new ArrayList<>(inst.getQueue());
+        Collections.sort(sorted);
+
+        System.out.printf("  %-4s | %-8s | %-30s | %-8s | %s%n", "No.", "ID", "Judul", "Prioritas", "Skor");
+        System.out.println("  " + "-".repeat(68));
+        int rank = 1;
+        for (Aspiration asp : sorted) {
+            String judul = asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
+            System.out.printf("  %-4d | %-8s | %-30s | %-8s | %.2f%n",
+                    rank++, asp.getId(), judul, asp.getPriority().getLabel(), asp.getTotalScore());
+        }
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.print("  ID laporan yang akan diproses (0=batal): ");
+        String id = sc.nextLine().trim().toUpperCase();
+        if (id.equals("0")) return;
+
+        Aspiration laporan = null;
+        for (Aspiration asp : sorted) {
+            if (asp.getId().equals(id)) { laporan = asp; break; }
+        }
+
+        if (laporan == null) {
+            System.out.println("  ID tidak ditemukan dalam antrean.");
+            return;
+        }
+
         laporan.displayDetail();
 
         System.out.println();
         System.out.println("  [1] Tandai Sedang Diproses");
-        System.out.println("  [0] Kembalikan ke antrean");
+        System.out.println("  [0] Batal");
         System.out.print("  Pilihan Anda: ");
         int pilihan = bacaInt();
 
         if (pilihan == 1) {
+            inst.removeAspiration(laporan);
             laporan.setStatus(Status.ON_PROGRESS);
             System.out.println("  Status laporan " + laporan.getId() + " diperbarui: Sedang Diproses.");
-        } else {
-            inst.addAspiration(laporan);
-            System.out.println("  Laporan dikembalikan ke antrean.");
+            saveData();
         }
-        saveData();
     }
 
     static void updateStatusLaporan(InstitutionAdmin ia) {
@@ -922,6 +948,43 @@ public class MainFlow {
         System.out.println("    Bukti     : " + bukti);
         System.out.println("  [NOTIF] Pelapor " + target.getAuthor() + " telah diberitahu.");
         System.out.println("  [INFO]  Laporan dianggap selesai jika tidak ada komplain dalam 3x24 jam.");
+    }
+
+    static void lihatRiwayatInstitusi(InstitutionAdmin ia) {
+        System.out.println();
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.println("  RIWAYAT LAPORAN SELESAI");
+        System.out.println("──────────────────────────────────────────────────");
+
+        List<Aspiration> selesai = new ArrayList<>();
+        for (Aspiration asp : aspirationMap.values()) {
+            if (asp.getInstitutionTarget().equals(ia.getInstitutionName())
+                    && asp.getStatus() == Status.DONE) {
+                selesai.add(asp);
+            }
+        }
+
+        if (selesai.isEmpty()) {
+            System.out.println("  Belum ada laporan yang selesai ditangani.");
+            System.out.println("──────────────────────────────────────────────────");
+            return;
+        }
+
+        System.out.printf("  %-8s | %-30s | %-8s | %s%n", "ID", "Judul", "Prioritas", "Closing Statement");
+        System.out.println("  " + "-".repeat(72));
+        for (Aspiration asp : selesai) {
+            String judul = asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
+            String stmt  = asp.getClosingStatement().length() > 20
+                    ? asp.getClosingStatement().substring(0, 20) + ".." : asp.getClosingStatement();
+            System.out.printf("  %-8s | %-30s | %-8s | %s%n",
+                    asp.getId(), judul, asp.getPriority().getLabel(), stmt);
+        }
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.print("  Lihat detail? Masukkan ID (0=batal): ");
+        String id = sc.nextLine().trim().toUpperCase();
+        if (!id.equals("0") && aspirationMap.containsKey(id)) {
+            aspirationMap.get(id).displayDetail();
+        }
     }
 
     static void registrasiAdminInstitusi(InstitutionAdmin ia) {
@@ -1043,21 +1106,19 @@ public class MainFlow {
             System.out.println("  (tidak ada institusi)");
         } else {
             for (Institution inst : institutionMap.values()) {
-                System.out.println("  " + inst.getNamaInstitution() + "  (" + inst.getJumlahAntrian() + " laporan)");
+                System.out.println("  " + inst.getNamaInstitution());
 
-                if (inst.getJumlahAntrian() == 0) {
-                    System.out.println("    (kosong)");
+                List<Aspiration> sorted = new ArrayList<>(inst.getQueue());
+                Collections.sort(sorted);
+
+                if (sorted.isEmpty()) {
+                    System.out.println("    [Antrean] (kosong)");
                 } else {
-                    List<Aspiration> sorted = new ArrayList<>(inst.getQueue());
-                    Collections.sort(sorted);
-
                     int rank = 1;
                     for (Aspiration asp : sorted) {
-                        String judul = asp.getTitle();
-                        if (judul.length() > 18) {
-                            judul = judul.substring(0, 18) + "..";
-                        }
-                        System.out.println("    #" + rank
+                        String judul = asp.getTitle().length() > 18
+                                ? asp.getTitle().substring(0, 18) + ".." : asp.getTitle();
+                        System.out.println("    [Antrean] #" + rank
                                 + "  " + asp.getId()
                                 + " | " + judul
                                 + " | Skor: " + String.format("%.2f", asp.getTotalScore())
@@ -1065,6 +1126,28 @@ public class MainFlow {
                         rank++;
                     }
                 }
+
+                List<Aspiration> onProgress = new ArrayList<>();
+                for (Aspiration asp : aspirationMap.values()) {
+                    if (asp.getInstitutionTarget().equals(inst.getNamaInstitution())
+                            && asp.getStatus() == Status.ON_PROGRESS) {
+                        onProgress.add(asp);
+                    }
+                }
+
+                if (onProgress.isEmpty()) {
+                    System.out.println("    [Diproses] (tidak ada)");
+                } else {
+                    for (Aspiration asp : onProgress) {
+                        String judul = asp.getTitle().length() > 18
+                                ? asp.getTitle().substring(0, 18) + ".." : asp.getTitle();
+                        System.out.println("    [Diproses] " + asp.getId()
+                                + " | " + judul
+                                + " | Skor: " + String.format("%.2f", asp.getTotalScore())
+                                + " | " + asp.getPriority().getLabel());
+                    }
+                }
+
                 System.out.println();
             }
         }
