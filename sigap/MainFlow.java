@@ -1,5 +1,6 @@
 package sigap;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,20 +13,20 @@ import sigap.enums.Status;
 
 
 public class MainFlow {
+
     static HashMap<String, User> userMap = new HashMap<>();
     static HashMap<String, Aspiration> aspirationMap = new HashMap<>();
     static LinkedList<Aspiration> verificationQueue = new LinkedList<>();
     static HashMap<String, Institution> institutionMap = new HashMap<>();
-
     
-    
+    static final String DATA_DIR = "data";
     static int aspirationCounter = 1;
     static Scanner sc = new Scanner(System.in);
     static User currentUser = null;
 
     public static void main(String[] args) {
-        printBanner();                 
-        inisialisasiDummyData();       
+        printBanner();
+        loadData();
         tekanEnterUntukMulai();        
         menuUtama();                  
         sc.close();                   
@@ -41,7 +42,7 @@ public class MainFlow {
         System.out.println("  ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ");
         System.out.println();
         System.out.println("  Sistem Informasi Aspirasi Publik");
-        System.out.println("  Versi 1.0 - (Register, Login, Tambah Aspirasi)");
+        System.out.println("  ALP - Kelompok 4");
         System.out.println();
         System.out.println("══════════════════════════════════════════════════════");
     }
@@ -61,80 +62,80 @@ public class MainFlow {
     }
 
  
-    static void inisialisasiDummyData() {
+    // static void inisialisasiDummyData() {
 
 
-        Admin adminSistem = new Admin("admin", "admin123", "Administrator SIGAP");
-        userMap.put("admin", adminSistem);
+    //     Admin adminSistem = new Admin("admin", "admin123", "Administrator SIGAP");
+    //     userMap.put("admin", adminSistem);
 
-        InstitutionAdmin iaPU = new InstitutionAdmin(
-                "inst_pu", "pu123",
-                "Pak Agus Setiawan",
-                "Dinas Pekerjaan Umum Sidoarjo"
-        );
-        InstitutionAdmin iaDinkes = new InstitutionAdmin(
-                "inst_dinkes", "dinkes123",
-                "Bu Rina Widayanti",
-                "Dinas Kesehatan Sidoarjo"
-        );
-        userMap.put("inst_pu",     iaPU);
-        userMap.put("inst_dinkes", iaDinkes);
+    //     InstitutionAdmin iaPU = new InstitutionAdmin(
+    //             "inst_pu", "pu123",
+    //             "Pak Agus Setiawan",
+    //             "Dinas Pekerjaan Umum Sidoarjo"
+    //     );
+    //     InstitutionAdmin iaDinkes = new InstitutionAdmin(
+    //             "inst_dinkes", "dinkes123",
+    //             "Bu Rina Widayanti",
+    //             "Dinas Kesehatan Sidoarjo"
+    //     );
+    //     userMap.put("inst_pu",     iaPU);
+    //     userMap.put("inst_dinkes", iaDinkes);
 
 
-        Institution instPU     = new Institution("Dinas Pekerjaan Umum Sidoarjo");
-        Institution instDinkes = new Institution("Dinas Kesehatan Sidoarjo");
-        institutionMap.put("Dinas Pekerjaan Umum Sidoarjo", instPU);
-        institutionMap.put("Dinas Kesehatan Sidoarjo",      instDinkes);
+    //     Institution instPU     = new Institution("Dinas Pekerjaan Umum Sidoarjo");
+    //     Institution instDinkes = new Institution("Dinas Kesehatan Sidoarjo");
+    //     institutionMap.put("Dinas Pekerjaan Umum Sidoarjo", instPU);
+    //     institutionMap.put("Dinas Kesehatan Sidoarjo",      instDinkes);
 
    
-        Citizen warga1 = new Citizen("budi",  "budi123",  "Budi Santoso");
-        Citizen warga2 = new Citizen("siti",  "siti123",  "Siti Aminah");
-        userMap.put("budi", warga1);
-        userMap.put("siti", warga2);
+    //     Citizen warga1 = new Citizen("budi",  "budi123",  "Budi Santoso");
+    //     Citizen warga2 = new Citizen("siti",  "siti123",  "Siti Aminah");
+    //     userMap.put("budi", warga1);
+    //     userMap.put("siti", warga2);
 
-        Aspiration asp1 = new Aspiration(
-                generateId(),
-                "Jalan Berlubang di Jl. Pahlawan",
-                "Jalan di depan SD Negeri 1 Sidoarjo sudah rusak parah. " +
-                "Banyak lubang besar yang membahayakan pengendara motor dan anak sekolah. " +
-                "Mohon segera diperbaiki.",
-                "Infrastruktur",
-                "Jl. Pahlawan No. 12, Kec. Sidoarjo",
-                "budi"
-        );
-        Aspiration asp2 = new Aspiration(
-                generateId(),
-                "Kurangnya Dokter di Puskesmas Waru",
-                "Puskesmas Kecamatan Waru hanya memiliki 2 dokter untuk melayani " +
-                "lebih dari 50.000 warga. Antrean sangat panjang dan waktu tunggu " +
-                "bisa mencapai 4-5 jam. Mohon penambahan tenaga medis.",
-                "Kesehatan",
-                "Puskesmas Waru, Kec. Waru, Sidoarjo",
-                "siti"
-        );
-        Aspiration asp3 = new Aspiration(
-                generateId(),
-                "Sampah Menumpuk di Bantaran Sungai Porong",
-                "Bantaran sungai Porong penuh dengan sampah rumah tangga. " +
-                "Bau tidak sedap mengganggu warga sekitar dan berpotensi " +
-                "menjadi sarang nyamuk. Perlu penanganan segera.",
-                "Lingkungan",
-                "Bantaran Sungai Porong, Kec. Porong, Sidoarjo",
-                "budi"
-        );
-        aspirationMap.put(asp1.getId(), asp1);
-        aspirationMap.put(asp2.getId(), asp2);
-        aspirationMap.put(asp3.getId(), asp3);
+    //     Aspiration asp1 = new Aspiration(
+    //             generateId(),
+    //             "Jalan Berlubang di Jl. Pahlawan",
+    //             "Jalan di depan SD Negeri 1 Sidoarjo sudah rusak parah. " +
+    //             "Banyak lubang besar yang membahayakan pengendara motor dan anak sekolah. " +
+    //             "Mohon segera diperbaiki.",
+    //             "Infrastruktur",
+    //             "Jl. Pahlawan No. 12, Kec. Sidoarjo",
+    //             "budi"
+    //     );
+    //     Aspiration asp2 = new Aspiration(
+    //             generateId(),
+    //             "Kurangnya Dokter di Puskesmas Waru",
+    //             "Puskesmas Kecamatan Waru hanya memiliki 2 dokter untuk melayani " +
+    //             "lebih dari 50.000 warga. Antrean sangat panjang dan waktu tunggu " +
+    //             "bisa mencapai 4-5 jam. Mohon penambahan tenaga medis.",
+    //             "Kesehatan",
+    //             "Puskesmas Waru, Kec. Waru, Sidoarjo",
+    //             "siti"
+    //     );
+    //     Aspiration asp3 = new Aspiration(
+    //             generateId(),
+    //             "Sampah Menumpuk di Bantaran Sungai Porong",
+    //             "Bantaran sungai Porong penuh dengan sampah rumah tangga. " +
+    //             "Bau tidak sedap mengganggu warga sekitar dan berpotensi " +
+    //             "menjadi sarang nyamuk. Perlu penanganan segera.",
+    //             "Lingkungan",
+    //             "Bantaran Sungai Porong, Kec. Porong, Sidoarjo",
+    //             "budi"
+    //     );
+    //     aspirationMap.put(asp1.getId(), asp1);
+    //     aspirationMap.put(asp2.getId(), asp2);
+    //     aspirationMap.put(asp3.getId(), asp3);
 
-        verificationQueue.add(asp1);    
-        verificationQueue.add(asp2);
-        verificationQueue.add(asp3);
+    //     verificationQueue.add(asp1);    
+    //     verificationQueue.add(asp2);
+    //     verificationQueue.add(asp3);
 
-        System.out.println();
-        System.out.println("  [SISTEM] Data awal berhasil dimuat.");
-        System.out.println("  [SISTEM] " + userMap.size() + " user, "
-                + aspirationMap.size() + " aspirasi siap.");
-    }
+    //     System.out.println();
+    //     System.out.println("  [SISTEM] Data awal berhasil dimuat.");
+    //     System.out.println("  [SISTEM] " + userMap.size() + " user, "
+    //             + aspirationMap.size() + " aspirasi siap.");
+    // }
 
 
     static String generateId() {
@@ -235,7 +236,8 @@ public class MainFlow {
         }
 
         Citizen wargaBaru = new Citizen(username, password, nama);
-        userMap.put(username, wargaBaru);  
+        userMap.put(username, wargaBaru);
+        saveData();
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════╗");
@@ -278,7 +280,7 @@ public class MainFlow {
 
         currentUser = user;
         System.out.println();
-        System.out.println("    Login berhasil!");
+        System.out.println("  Login berhasil!");
         System.out.println("  Selamat datang, " + user.getNama() + "! [" + user.getRole() + "]");
 
         String role = user.getRole();
@@ -388,7 +390,7 @@ public class MainFlow {
         }
 
         System.out.println();
-        System.out.println("  ── Konfirmasi Aspirasi ──────────────────");
+        System.out.println("  ────────── Konfirmasi Aspirasi ──────────");
         System.out.println("  Judul     : " + title);
         System.out.println("  Deskripsi : " + description);
         System.out.println("  Kategori  : " + category);
@@ -406,6 +408,7 @@ public class MainFlow {
         Aspiration aspirasiBaru = citizen.buatAspirasi(newId, title, description, category, location);
         aspirationMap.put(newId, aspirasiBaru);
         verificationQueue.add(aspirasiBaru);
+        saveData();
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════════╗");
@@ -481,6 +484,7 @@ public class MainFlow {
             return;
         }
 
+        saveData();
         System.out.println("  Terima kasih! Aspirasi " + id + " berhasil diupvote.");
         System.out.println("  Total upvote sekarang: " + aspirasi.getUpvotes());
     }
@@ -556,30 +560,56 @@ public class MainFlow {
             return;
         }
 
-        Aspiration aspirasi = verificationQueue.poll();
+        System.out.printf("  %-8s | %-30s | %-15s | %s%n", "ID", "Judul", "Kategori", "Pelapor");
+        System.out.println("  " + "─".repeat(66));
+        for (Aspiration asp : verificationQueue) {
+            String judul = asp.getTitle().length() > 28
+                    ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
+            System.out.printf("  %-8s | %-30s | %-15s | %s%n",
+                    asp.getId(), judul, asp.getCategory(), asp.getAuthor());
+        }
+        System.out.println("╚══════════════════════════════════════════╝");
+
+        System.out.print("  ID aspirasi yang akan diverifikasi (0=batal): ");
+        String id = sc.nextLine().trim().toUpperCase();
+        if (id.equals("0")) return;
+
+        Aspiration aspirasi = null;
+        for (Aspiration asp : verificationQueue) {
+            if (asp.getId().equals(id)) { aspirasi = asp; break; }
+        }
+
+        if (aspirasi == null) {
+            System.out.println("  ID tidak ditemukan dalam antrean verifikasi.");
+            return;
+        }
+
         aspirasi.displayDetail();
 
         System.out.println();
         System.out.println("  [1] Setujui aspirasi");
         System.out.println("  [2] Tolak aspirasi");
+        System.out.println("  [0] Batal");
         System.out.print("  Pilihan Anda: ");
         int pilihan = bacaInt();
 
         switch (pilihan) {
             case 1:
+                verificationQueue.remove(aspirasi);
                 aspirasi.setStatus(sigap.enums.Status.APPROVED);
                 System.out.println("  Aspirasi " + aspirasi.getId() + " disetujui.");
                 break;
             case 2:
+                verificationQueue.remove(aspirasi);
                 aspirasi.setStatus(sigap.enums.Status.REJECTED);
                 System.out.println("  Aspirasi " + aspirasi.getId() + " ditolak.");
                 break;
             default:
-                System.out.println("  Pilihan tidak valid. Aspirasi dikembalikan ke antrean.");
-                verificationQueue.addFirst(aspirasi);
+                System.out.println("  Dibatalkan. Aspirasi tetap dalam antrean.");
                 return;
         }
 
+        saveData();
         System.out.println("  Status terbaru: " + aspirasi.getStatus().getLabel());
     }
 
@@ -673,6 +703,7 @@ public class MainFlow {
         }
 
         target.lockScore(sAuth, sSafe);
+        saveData();
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════════╗");
@@ -771,6 +802,7 @@ public class MainFlow {
         target.setInstitutionTarget(instName);
         inst.addAspiration(target);
         target.setDistributed(true);
+        saveData();
 
         System.out.println();
         System.out.println("  Laporan " + target.getId() + " berhasil dikirim ke " + instName + ".");
@@ -805,6 +837,7 @@ public class MainFlow {
             inst.addAspiration(laporan);
             System.out.println("  Laporan dikembalikan ke antrean.");
         }
+        saveData();
     }
 
     static void updateStatusLaporan(InstitutionAdmin ia) {
@@ -860,6 +893,7 @@ public class MainFlow {
 
         target.setClosingStatement(stmt);
         target.setStatus(Status.DONE);
+        saveData();
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════╗");
@@ -907,6 +941,7 @@ public class MainFlow {
 
         InstitutionAdmin adminBaru = new InstitutionAdmin(username, password, nama, ia.getInstitutionName());
         userMap.put(username, adminBaru);
+        saveData();
 
         System.out.println();
         System.out.println("  ╔══════════════════════════════════════╗");
@@ -1012,6 +1047,217 @@ public class MainFlow {
             }
         }
     }
+
+    // ── PERSISTENCE ──────────────────────────────────────────────────────────
+
+    static String escape(String s) {
+        if (s == null) return "";
+        return s.replace("|", "{{PIPE}}").replace("\n", "{{NL}}");
+    }
+
+    static String unescape(String s) {
+        if (s == null) return "";
+        return s.replace("{{NL}}", "\n").replace("{{PIPE}}", "|");
+    }
+
+    static void saveData() {
+        try {
+            new File(DATA_DIR).mkdirs();
+
+            try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+                    new FileOutputStream(DATA_DIR + "/users.txt"), "UTF-8"))) {
+                for (User u : userMap.values()) {
+                    String instName = u.getRole().equals("INSTITUTION_ADMIN")
+                            ? ((InstitutionAdmin) u).getInstitutionName() : "";
+                    pw.println(escape(u.getRole()) + "|" + escape(u.getUsername()) + "|"
+                            + escape(u.getPassword()) + "|" + escape(u.getNama()) + "|" + escape(instName));
+                }
+            }
+
+            try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+                    new FileOutputStream(DATA_DIR + "/aspirations.txt"), "UTF-8"))) {
+                for (Aspiration asp : aspirationMap.values()) {
+                    StringBuilder upvoters = new StringBuilder();
+                    for (String u : asp.getUpvotedUsers()) {
+                        if (upvoters.length() > 0) upvoters.append(";");
+                        upvoters.append(escape(u));
+                    }
+                    pw.println(escape(asp.getId()) + "|" + escape(asp.getTitle()) + "|"
+                            + escape(asp.getDescription()) + "|" + escape(asp.getCategory()) + "|"
+                            + escape(asp.getLocation()) + "|" + escape(asp.getAuthor()) + "|"
+                            + asp.getStatus().name() + "|" + asp.getUpvotes() + "|"
+                            + escape(asp.getInstitutionTarget()) + "|" + asp.isScoreLocked() + "|"
+                            + asp.isDistributed() + "|" + escape(asp.getClosingStatement()) + "|"
+                            + asp.getSAuth() + "|" + asp.getSSafe() + "|" + asp.getTotalScore() + "|"
+                            + escape(asp.getCreatedAt()) + "|" + upvoters.toString());
+                }
+            }
+
+            try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+                    new FileOutputStream(DATA_DIR + "/institutions.txt"), "UTF-8"))) {
+                for (Institution inst : institutionMap.values()) {
+                    StringBuilder queueIds = new StringBuilder();
+                    for (Aspiration asp : inst.getQueue()) {
+                        if (queueIds.length() > 0) queueIds.append(";");
+                        queueIds.append(asp.getId());
+                    }
+                    pw.println(escape(inst.getNamaInstitution()) + "|" + queueIds.toString());
+                }
+            }
+
+            try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+                    new FileOutputStream(DATA_DIR + "/verqueue.txt"), "UTF-8"))) {
+                for (Aspiration asp : verificationQueue) {
+                    pw.println(asp.getId());
+                }
+            }
+
+            try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+                    new FileOutputStream(DATA_DIR + "/counter.txt"), "UTF-8"))) {
+                pw.println(aspirationCounter);
+            }
+
+        } catch (Exception e) {
+            System.out.println("  [WARN] Gagal menyimpan data: " + e.getMessage());
+        }
+    }
+
+    static void loadData() {
+        File counterFile = new File(DATA_DIR + "/counter.txt");
+        if (!counterFile.exists()) {
+            // inisialisasiDummyData();
+            saveData();
+            return;
+        }
+        try {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(DATA_DIR + "/counter.txt"), "UTF-8"))) {
+                String line = br.readLine();
+                if (line != null) aspirationCounter = Integer.parseInt(line.trim());
+            }
+
+            File usersFile = new File(DATA_DIR + "/users.txt");
+            if (usersFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(usersFile), "UTF-8"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (line.trim().isEmpty()) continue;
+                        String[] p = line.split("\\|", -1);
+                        if (p.length < 5) continue;
+                        String role     = unescape(p[0]);
+                        String username = unescape(p[1]);
+                        String password = unescape(p[2]);
+                        String nama     = unescape(p[3]);
+                        String instName = unescape(p[4]);
+                        User u;
+                        switch (role) {
+                            case "ADMIN":
+                                u = new Admin(username, password, nama); break;
+                            case "INSTITUTION_ADMIN":
+                                u = new InstitutionAdmin(username, password, nama, instName); break;
+                            default:
+                                u = new Citizen(username, password, nama); break;
+                        }
+                        userMap.put(username, u);
+                    }
+                }
+            }
+
+            File aspFile = new File(DATA_DIR + "/aspirations.txt");
+            if (aspFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(aspFile), "UTF-8"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (line.trim().isEmpty()) continue;
+                        String[] p = line.split("\\|", -1);
+                        if (p.length < 16) continue;
+                        String  id          = unescape(p[0]);
+                        String  title       = unescape(p[1]);
+                        String  description = unescape(p[2]);
+                        String  category    = unescape(p[3]);
+                        String  location    = unescape(p[4]);
+                        String  author      = unescape(p[5]);
+                        Status  status      = Status.valueOf(p[6]);
+                        String  instTarget  = unescape(p[8]);
+                        boolean scoreLocked = Boolean.parseBoolean(p[9]);
+                        boolean distributed = Boolean.parseBoolean(p[10]);
+                        String  closingStmt = unescape(p[11]);
+                        double  sAuth       = Double.parseDouble(p[12]);
+                        double  sSafe       = Double.parseDouble(p[13]);
+                        double  totalScore  = Double.parseDouble(p[14]);
+                        String  createdAt   = unescape(p[15]);
+                        String  upvotersStr = p.length > 16 ? p[16] : "";
+
+                        Aspiration asp = new Aspiration(id, title, description, category, location, author);
+                        asp.setCreatedAt(createdAt);
+                        asp.setStatus(status);
+                        asp.setInstitutionTarget(instTarget);
+                        asp.setDistributed(distributed);
+                        asp.setClosingStatement(closingStmt);
+                        if (!upvotersStr.isEmpty()) {
+                            for (String u : upvotersStr.split(";")) {
+                                asp.addUpvote(unescape(u));
+                            }
+                        }
+                        if (scoreLocked) asp.restoreScore(sAuth, sSafe, totalScore);
+                        aspirationMap.put(id, asp);
+                    }
+                }
+            }
+
+            File instFile = new File(DATA_DIR + "/institutions.txt");
+            if (instFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(instFile), "UTF-8"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (line.trim().isEmpty()) continue;
+                        String[] p = line.split("\\|", -1);
+                        String instName = unescape(p[0]);
+                        Institution inst = new Institution(instName);
+                        institutionMap.put(instName, inst);
+                        if (p.length > 1 && !p[1].isEmpty()) {
+                            for (String aspId : p[1].split(";")) {
+                                Aspiration asp = aspirationMap.get(aspId.trim());
+                                if (asp != null) inst.addAspiration(asp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            File vqFile = new File(DATA_DIR + "/verqueue.txt");
+            if (vqFile.exists()) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(vqFile), "UTF-8"))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (line.trim().isEmpty()) continue;
+                        Aspiration asp = aspirationMap.get(line.trim());
+                        if (asp != null) verificationQueue.add(asp);
+                    }
+                }
+            }
+
+            System.out.println();
+            System.out.println("  [SISTEM] Data berhasil dimuat dari penyimpanan.");
+            System.out.println("  [SISTEM] " + userMap.size() + " user, "
+                    + aspirationMap.size() + " aspirasi siap.");
+
+        } catch (Exception e) {
+            System.out.println("  [WARN] Gagal memuat data: " + e.getMessage() + ". Memuat data awal...");
+            userMap.clear();
+            aspirationMap.clear();
+            verificationQueue.clear();
+            institutionMap.clear();
+            // inisialisasiDummyData();
+            saveData();
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     static int bacaInt() {
         try {

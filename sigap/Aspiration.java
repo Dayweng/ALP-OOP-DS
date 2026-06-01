@@ -190,4 +190,12 @@ public class Aspiration implements Comparable<Aspiration> {
     public void    setInstitutionTarget(String instTarget)   { this.institutionTarget = instTarget; }
     public void    setDistributed(boolean distributed)       { this.distributed       = distributed; }
     public void    setClosingStatement(String stmt)          { this.closingStatement  = stmt; }
+    public void    setCreatedAt(String createdAt)            { this.createdAt         = createdAt; }
+
+    public void restoreScore(double sAuth, double sSafe, double totalScore) {
+        this.sAuth       = sAuth;
+        this.sSafe       = sSafe;
+        this.totalScore  = totalScore;
+        this.scoreLocked = true;
+    }
 }

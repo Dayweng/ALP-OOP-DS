@@ -1,0 +1,5 @@
+INSTITUTION_ADMIN|inst_pu|pu123|Pak Agus Setiawan|Dinas Pekerjaan Umum Sidoarjo
+CITIZEN|budi|budi123|Budi Santoso|
+INSTITUTION_ADMIN|inst_dinkes|dinkes123|Bu Rina Widayanti|Dinas Kesehatan Sidoarjo
+ADMIN|admin|admin123|Administrator SIGAP|
+CITIZEN|siti|siti123|Siti Aminah|
