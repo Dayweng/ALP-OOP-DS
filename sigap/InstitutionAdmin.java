@@ -13,17 +13,17 @@ public class InstitutionAdmin extends User {
     @Override
     public void showDashboard() {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║       DASHBOARD ADMIN INSTITUSI          ║");
-        System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  Halo, " + getNama() + "!");
-        System.out.println("║  Institusi : " + institutionName);
-        System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  [1] Proses Laporan                      ║");
-        System.out.println("║  [2] Update Status Laporan               ║");
-        System.out.println("║  [3] Registrasi Admin Institusi          ║");
-        System.out.println("║  [0] Logout                              ║");
-        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.println("--------------------------------------------------");
+        System.out.println("  DASHBOARD ADMIN INSTITUSI");
+        System.out.println("--------------------------------------------------");
+        System.out.println("  Halo, " + getNama() + "!");
+        System.out.println("  Institusi : " + institutionName);
+        System.out.println("--------------------------------------------------");
+        System.out.println("  [1] Proses Laporan");
+        System.out.println("  [2] Update Status Laporan");
+        System.out.println("  [3] Registrasi Admin Institusi");
+        System.out.println("  [0] Logout");
+        System.out.println("--------------------------------------------------");
     }
     public String getInstitutionName() { return institutionName; }
     public void setInstitutionName(String institutionName) {

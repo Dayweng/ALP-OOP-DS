@@ -12,18 +12,18 @@ public class Citizen extends User {
     @Override
     public void showDashboard() {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║       DASHBOARD WARGA NEGARA             ║");
-        System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  Halo, " + getNama() + "!");
-        System.out.println("║  Role    : Warga / Citizen               ║");
-        System.out.println("╠══════════════════════════════════════════╣");
-        System.out.println("║  [1] Tambah Aspirasi Baru                ║");
-        System.out.println("║  [2] Lihat Aspirasi                      ║");
-        System.out.println("║  [3] Upvote Aspirasi                     ║");
-        System.out.println("║  [4] Cari Aspirasi                       ║");
-        System.out.println("║  [0] Logout                              ║");
-        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.println("--------------------------------------------------");
+        System.out.println("  DASHBOARD WARGA NEGARA");
+        System.out.println("--------------------------------------------------");
+        System.out.println("  Halo, " + getNama() + "!");
+        System.out.println("  Role    : Warga / Citizen");
+        System.out.println("--------------------------------------------------");
+        System.out.println("  [1] Tambah Aspirasi Baru");
+        System.out.println("  [2] Lihat Aspirasi");
+        System.out.println("  [3] Upvote Aspirasi");
+        System.out.println("  [4] Cari Aspirasi");
+        System.out.println("  [0] Logout");
+        System.out.println("--------------------------------------------------");
     }
     public Aspiration buatAspirasi(String id, String title,
                                    String description, String category,
