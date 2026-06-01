@@ -39,7 +39,7 @@ public class MainFlow {
         System.out.println("  Sistem Informasi Aspirasi Publik");
         System.out.println("  ALP - Kelompok 4");
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
     }
 
 
@@ -51,9 +51,9 @@ public class MainFlow {
 
     static void printHeader() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  SIGAP - Sistem Informasi Aspirasi Publik");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
     }
 
  
@@ -145,13 +145,13 @@ public class MainFlow {
 
         while (running) {
             printHeader();
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.println("  MENU UTAMA");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.println("  [1] Register Akun Baru");
             System.out.println("  [2] Login");
             System.out.println("  [0] Keluar Program");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.print("  Pilihan Anda: ");
 
             int pilihan = bacaInt();
@@ -179,12 +179,12 @@ public class MainFlow {
 
     static void prosesRegister() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  REGISTRASI AKUN WARGA");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Daftarkan diri Anda untuk mulai");
         System.out.println("  menyampaikan aspirasi kepada pemerintah.");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println();
 
         System.out.print("  Nama Lengkap       : ");
@@ -235,9 +235,9 @@ public class MainFlow {
         saveData();
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  REGISTRASI BERHASIL!");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("    Nama     : " + nama);
         System.out.println("    Username : " + username);
         System.out.println("    Role     : Warga / Citizen");
@@ -248,9 +248,9 @@ public class MainFlow {
 
     static void prosesLogin() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  LOGIN");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println();
 
         System.out.print("  Username : ");
@@ -331,11 +331,11 @@ public class MainFlow {
 
     static void prosesTambahAspirasi(Citizen citizen) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  TAMBAH ASPIRASI BARU");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Sampaikan aspirasi Anda");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println();
 
         System.out.print("  Judul Aspirasi  : ");
@@ -385,14 +385,14 @@ public class MainFlow {
         }
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Konfirmasi Aspirasi");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Judul     : " + title);
         System.out.println("  Deskripsi : " + description);
         System.out.println("  Kategori  : " + category);
         System.out.println("  Lokasi    : " + location);
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.print("Kirim aspirasi ini? (y/n): ");
         String konfirmasi = sc.nextLine().trim().toLowerCase();
 
@@ -409,9 +409,9 @@ public class MainFlow {
         saveData();
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  ASPIRASI BERHASIL DIKIRIM!");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("    ID Aspirasi  : " + newId);
         System.out.println("    Judul        : " + title);
         System.out.println("    Kategori     : " + category);
@@ -425,9 +425,9 @@ public class MainFlow {
 
     static void tampilkanSemuaAspirasi() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  DAFTAR ASPIRASI PUBLIK");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         if (aspirationMap.isEmpty()) {
             System.out.println("  Belum ada aspirasi yang tersedia.");
@@ -437,18 +437,18 @@ public class MainFlow {
             }
         }
 
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
     }
 
     static void upvoteAspiration(Citizen citizen) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  UPVOTE ASPIRASI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         if (aspirationMap.isEmpty()) {
             System.out.println("  Tidak ada aspirasi untuk diupvote saat ini.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -456,7 +456,7 @@ public class MainFlow {
             aspirasi.displaySummary();
         }
 
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.print("  Masukkan ID aspirasi yang ingin diupvote: ");
         String id = sc.nextLine().trim().toUpperCase();
 
@@ -489,15 +489,15 @@ public class MainFlow {
 
     static void cariAspirasi() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  CARI ASPIRASI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.print("  Masukkan kata kunci: ");
         String input = sc.nextLine().trim().toLowerCase();
 
         if (input.isEmpty()) {
             System.out.println("  Kata kunci tidak boleh kosong.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -516,18 +516,18 @@ public class MainFlow {
 
         if (hasilIds.isEmpty()) {
             System.out.println("  Tidak ada aspirasi yang cocok dengan kata kunci \"" + input + "\".");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
         System.out.println("  Ditemukan " + hasilIds.size() + " aspirasi:");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.printf("  %-8s | %-30s | %-15s | %s%n", "ID", "Judul", "Kategori", "Status");
         System.out.println("  " + "-".repeat(66));
         for (String id : hasilIds) {
             aspirationMap.get(id).displaySummary();
         }
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         System.out.print("  Lihat detail? Masukkan ID (0=batal): ");
         String pilihanId = sc.nextLine().trim().toUpperCase();
@@ -573,13 +573,13 @@ public class MainFlow {
 
     static void verifikasiAspirasi(Admin admin) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  VERIFIKASI ASPIRASI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         if (verificationQueue.isEmpty()) {
             System.out.println("  Tidak ada aspirasi menunggu verifikasi.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -591,7 +591,7 @@ public class MainFlow {
             System.out.printf("  %-8s | %-30s | %-15s | %s%n",
                     asp.getId(), judul, asp.getCategory(), asp.getAuthor());
         }
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         System.out.print("  ID aspirasi yang akan diverifikasi (0=batal): ");
         String id = sc.nextLine().trim().toUpperCase();
@@ -638,9 +638,9 @@ public class MainFlow {
 
     static void tetapkanPrioritasAspirasi(Admin admin) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  PENENTUAN PRIORITAS");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         LinkedList<Aspiration> siap = new LinkedList<>();
         for (Aspiration asp : aspirationMap.values()) {
@@ -652,7 +652,7 @@ public class MainFlow {
         if (siap.isEmpty()) {
             System.out.println("  Tidak ada aspirasi siap diprioritaskan.");
             System.out.println("  Pastikan ada aspirasi berstatus DISETUJUI.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -679,9 +679,9 @@ public class MainFlow {
         target.displayDetail();
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Input Admin");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  S_auth (30%) - Otoritas Admin [1-10]");
         System.out.println("  Nilai RENDAH = laporan dilebih-lebihkan.");
         System.out.println("  Nilai TINGGI = darurat, butuh penanganan segera.");
@@ -701,15 +701,15 @@ public class MainFlow {
         else                     tierLabel = "RENDAH";
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Kalkulasi Skor Final");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.printf("  S_auth  x 0.30 = %.3f%n", sAuth               * 0.30);
         System.out.printf("  S_safe  x 0.25 = %.3f%n", sSafe               * 0.25);
         System.out.printf("  S_scale x 0.15 = %.3f%n", target.calcSScale() * 0.15);
         System.out.printf("  S_cat   x 0.15 = %.3f%n", target.calcSCat()   * 0.15);
         System.out.printf("  S_sys   x 0.15 = %.3f%n", target.calcSSys()   * 0.15);
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.printf("  Total Score    = %.2f / 10.0  [%s]%n", preview, tierLabel);
 
         System.out.println();
@@ -724,9 +724,9 @@ public class MainFlow {
         saveData();
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  PRIORITAS BERHASIL DIKUNCI!");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.printf("    ID        : %s%n",          target.getId());
         System.out.printf("    Skor      : %.2f / 10.0%n", target.getTotalScore());
         System.out.printf("    Prioritas : %s%n",          target.getPriority().getLabel());
@@ -765,9 +765,9 @@ public class MainFlow {
 
     static void distribusiInstitusi(Admin admin) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  DISTRIBUSI KE INSTITUSI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         List<Aspiration> siap = new ArrayList<>();
         for (Aspiration asp : aspirationMap.values()) {
@@ -776,7 +776,7 @@ public class MainFlow {
 
         if (siap.isEmpty()) {
             System.out.println("  Tidak ada laporan yang siap didistribusi.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -787,7 +787,7 @@ public class MainFlow {
             System.out.printf("  %-8s | %-30s | %-10s | %.2f%n",
                     asp.getId(), judul, asp.getPriority().getLabel(), asp.getTotalScore());
         }
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.print("  ID laporan (0=batal): ");
         String id = sc.nextLine().trim().toUpperCase();
         if (id.equals("0")) return;
@@ -828,14 +828,14 @@ public class MainFlow {
 
     static void prosesLaporanInstitusi(InstitutionAdmin ia) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  PROSES LAPORAN INSTITUSI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         Institution inst = institutionMap.get(ia.getInstitutionName());
         if (inst == null || inst.getJumlahAntrian() == 0) {
             System.out.println("  Tidak ada laporan dalam antrean institusi Anda.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -860,9 +860,9 @@ public class MainFlow {
 
     static void updateStatusLaporan(InstitutionAdmin ia) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  UPDATE STATUS LAPORAN");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         List<Aspiration> onProgress = new ArrayList<>();
         for (Aspiration asp : aspirationMap.values()) {
@@ -874,7 +874,7 @@ public class MainFlow {
 
         if (onProgress.isEmpty()) {
             System.out.println("  Tidak ada laporan sedang diproses oleh institusi Anda.");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             return;
         }
 
@@ -884,7 +884,7 @@ public class MainFlow {
             String judul = asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
             System.out.printf("  %-8s | %-30s | %d%n", asp.getId(), judul, asp.getUpvotes());
         }
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.print("  ID laporan yang akan ditutup (0=batal): ");
         String id = sc.nextLine().trim().toUpperCase();
         if (id.equals("0")) return;
@@ -914,9 +914,9 @@ public class MainFlow {
         saveData();
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  LAPORAN DITANDAI SELESAI!");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("    ID        : " + target.getId());
         System.out.println("    Statement : " + stmt);
         System.out.println("    Bukti     : " + bukti);
@@ -926,9 +926,9 @@ public class MainFlow {
 
     static void registrasiAdminInstitusi(InstitutionAdmin ia) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  REGISTRASI ADMIN INSTITUSI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Institusi : " + ia.getInstitutionName());
         System.out.println();
 
@@ -962,9 +962,9 @@ public class MainFlow {
         saveData();
 
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  AKUN ADMIN INSTITUSI DIBUAT!");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("    Nama      : " + nama);
         System.out.println("    Username  : " + username);
         System.out.println("    Institusi : " + ia.getInstitutionName());
@@ -972,9 +972,9 @@ public class MainFlow {
 
     static void dashboardStatistik(Admin admin) {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  DASHBOARD STATISTIK SIGAP");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         int total = aspirationMap.size();
         int done = 0, pending = 0, onProgress = 0;
@@ -1007,9 +1007,9 @@ public class MainFlow {
         System.out.printf("  Sedang Diproses    : %d%n", onProgress);
         System.out.printf("  Pending            : %d%n", pending);
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Per Institusi");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         if (perInstitusi.isEmpty()) {
             System.out.println("  (belum ada laporan yang didistribusi)");
         } else {
@@ -1019,26 +1019,26 @@ public class MainFlow {
         }
         System.out.println();
         if (topUpvote != null) {
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.println("  Upvote Tertinggi");
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.printf("  %s | %s | %d votes%n",
                     topUpvote.getId(), topUpvote.getTitle(), topUpvote.getUpvotes());
         }
         System.out.println();
         System.out.printf("  Trending Issue     : %s (%d laporan)%n", trending, maxKat);
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
     }
 
     static void lihatAntreanDualQueue() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  DUAL-QUEUE SYSTEM VIEW");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
 
         System.out.println();
         System.out.println("  ANTREAN PRIORITAS");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         if (institutionMap.isEmpty()) {
             System.out.println("  (tidak ada institusi)");
         } else {
@@ -1303,7 +1303,7 @@ public class MainFlow {
         }
     }
 
-    // -------------------------------------------------------------------------
+    // ──────────────────────────────────────────────────-----------------------
 
     static int bacaInt() {
         try {

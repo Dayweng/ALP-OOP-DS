@@ -112,9 +112,9 @@ public class Aspiration implements Comparable<Aspiration> {
 
     public void displayDetail() {
         System.out.println();
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  DETAIL ASPIRASI");
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  ID Aspirasi  : " + id);
         System.out.println("  Judul        : " + title);
         System.out.println("  Kategori     : " + category);
@@ -128,26 +128,26 @@ public class Aspiration implements Comparable<Aspiration> {
         System.out.println("  Penulis      : " + author);
         System.out.println("  Institusi    : " + institutionTarget);
         System.out.println("  Dibuat       : " + createdAt);
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Deskripsi    :");
         System.out.println("  " + description);
         if (status == Status.DONE && !closingStatement.equals("-")) {
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.println("  Closing Statement:");
             System.out.println("  " + closingStatement);
         }
         if (scoreLocked) {
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.println("  Rincian Skor  [TERKUNCI - tidak dapat diubah]");
             System.out.printf("  S_auth  (30%%) : %.1f   [Otoritas Admin]%n",            sAuth);
             System.out.printf("  S_safe  (25%%) : %.1f   [Keselamatan / Kesehatan]%n",   sSafe);
             System.out.printf("  S_scale (15%%) : %.1f   [Skala Dampak - %d upvotes]%n", calcSScale(), upvotes);
             System.out.printf("  S_cat   (15%%) : %.1f   [Bobot Kategori - %s]%n",       calcSCat(), category);
             System.out.printf("  S_sys   (15%%) : %.1f   [Aging - waktu tunggu]%n",      calcSSys());
-            System.out.println("--------------------------------------------------");
+            System.out.println("──────────────────────────────────────────────────");
             System.out.printf("  Total Score   : %.2f / 10.0%n", totalScore);
         }
-        System.out.println("--------------------------------------------------");
+        System.out.println("──────────────────────────────────────────────────");
     }
 
     public void displaySummary() {
