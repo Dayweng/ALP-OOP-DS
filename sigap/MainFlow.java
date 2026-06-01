@@ -1,14 +1,7 @@
 package sigap;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import sigap.enums.Status;
 
 
@@ -18,7 +11,8 @@ public class MainFlow {
     static HashMap<String, Aspiration> aspirationMap = new HashMap<>();
     static LinkedList<Aspiration> verificationQueue = new LinkedList<>();
     static HashMap<String, Institution> institutionMap = new HashMap<>();
-    
+    static HashMap<String, LinkedList<String>> invertedIndex = new HashMap<>();
+
     static final String DATA_DIR = "data";
     static int aspirationCounter = 1;
     static Scanner sc = new Scanner(System.in);
@@ -27,6 +21,7 @@ public class MainFlow {
     public static void main(String[] args) {
         printBanner();
         loadData();
+        buildInvertedIndex();
         tekanEnterUntukMulai();        
         menuUtama();                  
         sc.close();                   
@@ -408,6 +403,7 @@ public class MainFlow {
         Aspiration aspirasiBaru = citizen.buatAspirasi(newId, title, description, category, location);
         aspirationMap.put(newId, aspirasiBaru);
         verificationQueue.add(aspirasiBaru);
+        indexAspiration(aspirasiBaru);
         saveData();
 
         System.out.println();
@@ -494,23 +490,48 @@ public class MainFlow {
         System.out.println("╔══════════════════════════════════════════╗");
         System.out.println("║               CARI ASPIRASI              ║");
         System.out.println("╠══════════════════════════════════════════╣");
-        System.out.print("  Masukkan ID laporan: ");
-        String id = sc.nextLine().trim().toUpperCase();
+        System.out.print("  Masukkan kata kunci: ");
+        String input = sc.nextLine().trim().toLowerCase();
 
-        if (id.isEmpty()) {
-            System.out.println("  ID tidak boleh kosong.");
+        if (input.isEmpty()) {
+            System.out.println("  Kata kunci tidak boleh kosong.");
             System.out.println("╚══════════════════════════════════════════╝");
             return;
         }
 
-        Aspiration aspirasi = aspirationMap.get(id);
-        if (aspirasi == null) {
-            System.out.println("  Aspirasi dengan ID '" + id + "' tidak ditemukan.");
+        String[] keywords = input.split("[^a-zA-Z0-9]+");
+
+        LinkedList<String> hasilIds = new LinkedList<>();
+        for (String keyword : keywords) {
+            if (keyword.isEmpty()) continue;
+            LinkedList<String> ids = invertedIndex.get(keyword);
+            if (ids != null) {
+                for (String id : ids) {
+                    if (!hasilIds.contains(id)) hasilIds.add(id);
+                }
+            }
+        }
+
+        if (hasilIds.isEmpty()) {
+            System.out.println("  Tidak ada aspirasi yang cocok dengan kata kunci \"" + input + "\".");
             System.out.println("╚══════════════════════════════════════════╝");
             return;
         }
 
-        aspirasi.displayDetail();
+        System.out.println("  Ditemukan " + hasilIds.size() + " aspirasi:");
+        System.out.println("╠══════════════════════════════════════════╣");
+        System.out.printf("  %-8s | %-30s | %-15s | %s%n", "ID", "Judul", "Kategori", "Status");
+        System.out.println("  " + "─".repeat(66));
+        for (String id : hasilIds) {
+            aspirationMap.get(id).displaySummary();
+        }
+        System.out.println("╚══════════════════════════════════════════╝");
+
+        System.out.print("  Lihat detail? Masukkan ID (0=batal): ");
+        String pilihanId = sc.nextLine().trim().toUpperCase();
+        if (!pilihanId.equals("0") && aspirationMap.containsKey(pilihanId)) {
+            aspirationMap.get(pilihanId).displayDetail();
+        }
     }
 
     static void dashboardAdmin(Admin admin) {
@@ -654,15 +675,6 @@ public class MainFlow {
         }
 
         target.displayDetail();
-
-        // System.out.println();
-        // System.out.println("  ── Komponen Skor Otomatis ──────────────────────");
-        // System.out.printf("  S_scale (15%%) : %.2f  [Skala Dampak — %d upvotes]%n",
-        //         target.calcSScale(), target.getUpvotes());
-        // System.out.printf("  S_cat   (15%%) : %.2f  [Bobot Kategori: %s]%n",
-        //         target.calcSCat(), target.getCategory());
-        // System.out.printf("  S_sys   (15%%) : %.2f  [Aging / Waktu Tunggu]%n",
-        //         target.calcSSys());
 
         System.out.println();
         System.out.println("  ── Input Admin ─────────────────────────────────");
@@ -1048,8 +1060,6 @@ public class MainFlow {
         }
     }
 
-    // ── PERSISTENCE ──────────────────────────────────────────────────────────
-
     static String escape(String s) {
         if (s == null) return "";
         return s.replace("|", "{{PIPE}}").replace("\n", "{{NL}}");
@@ -1254,6 +1264,32 @@ public class MainFlow {
             institutionMap.clear();
             // inisialisasiDummyData();
             saveData();
+        }
+    }
+
+    // ── INVERTED INDEX ───────────────────────────────────────────────────────
+
+    static void buildInvertedIndex() {
+        invertedIndex.clear();
+        for (Aspiration asp : aspirationMap.values()) {
+            indexAspiration(asp);
+        }
+    }
+
+    static void indexAspiration(Aspiration asp) {
+        String gabungan = asp.getTitle()       + " "
+                        + asp.getDescription() + " "
+                        + asp.getCategory()    + " "
+                        + asp.getLocation();
+
+        String[] words = gabungan.toLowerCase().split("[^a-zA-Z0-9]+");
+
+        for (String word : words) {
+            if (word.isEmpty()) continue;
+            invertedIndex.computeIfAbsent(word, k -> new LinkedList<>());
+            if (!invertedIndex.get(word).contains(asp.getId())) {
+                invertedIndex.get(word).add(asp.getId());
+            }
         }
     }
 
