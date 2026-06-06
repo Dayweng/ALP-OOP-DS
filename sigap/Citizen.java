@@ -22,6 +22,7 @@ public class Citizen extends User {
         System.out.println("  [2] Lihat Aspirasi");
         System.out.println("  [3] Upvote Aspirasi");
         System.out.println("  [4] Cari Aspirasi");
+        System.out.println("  [5] Beri Komentar");
         System.out.println("  [0] Logout");
         System.out.println("──────────────────────────────────────────────────");
     }

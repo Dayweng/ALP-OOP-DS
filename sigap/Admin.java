@@ -26,6 +26,7 @@ public class Admin extends User {
         System.out.println("  [3] Lihat Antrean Dual-Queue");
         System.out.println("  [4] Dashboard Statistik");
         System.out.println("  [5] Distribusi Institusi");
+        System.out.println("  [6] Kelola Institusi");
         System.out.println("  [0] Logout");
         System.out.println("──────────────────────────────────────────────────");
     }

@@ -148,6 +148,18 @@ public class Aspiration implements Comparable<Aspiration> {
             System.out.printf("  Total Score   : %.2f / 10.0%n", totalScore);
         }
         System.out.println("──────────────────────────────────────────────────");
+        System.out.println("  Komentar (" + comments.size() + ")");
+        System.out.println("──────────────────────────────────────────────────");
+        if (comments.isEmpty()) {
+            System.out.println("  (belum ada komentar)");
+        } else {
+            for (CommentAspiration c : comments) {
+                System.out.println("  [" + c.getTimestamp() + "] " + c.getUsername());
+                System.out.println("  " + c.getComment());
+                System.out.println();
+            }
+        }
+        System.out.println("──────────────────────────────────────────────────");
     }
 
     public void displaySummary() {
@@ -183,6 +195,8 @@ public class Aspiration implements Comparable<Aspiration> {
         if (totalScore >= 4.0) return Priority.MEDIUM;
         return Priority.LOW;
     }
+
+    public void addComment(CommentAspiration c)              { comments.add(c); }
 
     public boolean isDistributed()                           { return distributed; }
     public String  getClosingStatement()                     { return closingStatement; }
