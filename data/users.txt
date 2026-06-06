@@ -4,4 +4,6 @@ CITIZEN|cav123|cav123|cav123|
 INSTITUTION_ADMIN|inst_dinkes|dinkes123|Bu Rina Widayanti|Dinas Kesehatan Sidoarjo
 INSTITUTION_ADMIN|kyubi123|Kyubi123|Kyubi Nimansara|Dinas Kesehatan Sidoarjo
 ADMIN|admin|admin123|Administrator SIGAP|
+INSTITUTION_ADMIN|cavinamadeus|123456|cavinamadeus|Dinas Kesehatan Sidoarjo
+CITIZEN|cavin|cavin123|Cavin Amadeus|
 CITIZEN|siti|siti123|Siti Aminah|

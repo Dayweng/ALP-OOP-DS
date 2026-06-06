@@ -13,6 +13,30 @@ public class MainFlow {
     static HashMap<String, Institution> institutionMap = new HashMap<>();
     static HashMap<String, LinkedList<String>> invertedIndex = new HashMap<>();
 
+    // -- O(1) indexes & caches (rebuilt on load, maintained incrementally) --
+
+    // #1 - O(1) lookup inside verification queue
+    static HashMap<String, Aspiration> verificationQueueMap = new HashMap<>();
+
+    // #2 - approved but not yet scored (for prioritization)
+    static LinkedList<Aspiration> approvedUnscoredList = new LinkedList<>();
+
+    // #3 - scored but not yet distributed
+    static LinkedList<Aspiration> readyToDistributeList = new LinkedList<>();
+
+    // #4 & #5 - per-institution ON_PROGRESS and DONE lists
+    static HashMap<String, LinkedList<Aspiration>> institutionOnProgressMap = new HashMap<>();
+    static HashMap<String, LinkedList<Aspiration>> institutionDoneMap       = new HashMap<>();
+
+    // #6 - cached statistics (updated incrementally, O(1) on display)
+    static int statTotal      = 0;
+    static int statDone       = 0;
+    static int statPending    = 0;
+    static int statOnProgress = 0;
+    static HashMap<String, Integer> statPerInstitusi = new HashMap<>();
+    static HashMap<String, Integer> statPerKategori  = new HashMap<>();
+    static Aspiration statTopUpvote = null;
+
     static final String DATA_DIR = "data";
     static int aspirationCounter = 1;
     static Scanner sc = new Scanner(System.in);
@@ -22,9 +46,58 @@ public class MainFlow {
         printBanner();
         loadData();
         buildInvertedIndex();
-        tekanEnterUntukMulai();        
-        menuUtama();                  
-        sc.close();                   
+        rebuildIndexes();
+        tekanEnterUntukMulai();
+        menuUtama();
+        sc.close();
+    }
+
+    // Rebuilds all O(1) indexes from current aspirationMap + verificationQueue.
+    // Called once after loadData(). After that, each method maintains its own slice.
+    static void rebuildIndexes() {
+        verificationQueueMap.clear();
+        approvedUnscoredList.clear();
+        readyToDistributeList.clear();
+        institutionOnProgressMap.clear();
+        institutionDoneMap.clear();
+
+        statTotal      = aspirationMap.size();
+        statDone       = 0;
+        statPending    = 0;
+        statOnProgress = 0;
+        statPerInstitusi.clear();
+        statPerKategori.clear();
+        statTopUpvote  = null;
+
+        for (Aspiration asp : verificationQueue) {
+            verificationQueueMap.put(asp.getId(), asp);
+        }
+
+        for (Aspiration asp : aspirationMap.values()) {
+            Status s    = asp.getStatus();
+            String inst = asp.getInstitutionTarget();
+
+            if      (s == Status.DONE)        statDone++;
+            else if (s == Status.PENDING)     statPending++;
+            else if (s == Status.ON_PROGRESS) statOnProgress++;
+
+            if (!inst.equals("-")) statPerInstitusi.merge(inst, 1, Integer::sum);
+            statPerKategori.merge(asp.getCategory(), 1, Integer::sum);
+            if (statTopUpvote == null || asp.getUpvotes() > statTopUpvote.getUpvotes())
+                statTopUpvote = asp;
+
+            if (s == Status.APPROVED && !asp.isScoreLocked())
+                approvedUnscoredList.add(asp);
+
+            if (asp.isScoreLocked() && !asp.isDistributed())
+                readyToDistributeList.add(asp);
+
+            if (s == Status.ON_PROGRESS && !inst.equals("-"))
+                institutionOnProgressMap.computeIfAbsent(inst, k -> new LinkedList<>()).add(asp);
+
+            if (s == Status.DONE && !inst.equals("-"))
+                institutionDoneMap.computeIfAbsent(inst, k -> new LinkedList<>()).add(asp);
+        }
     }
  
     static void printBanner() {
@@ -405,7 +478,12 @@ public class MainFlow {
         Aspiration aspirasiBaru = citizen.buatAspirasi(newId, title, description, category, location);
         aspirationMap.put(newId, aspirasiBaru);
         verificationQueue.add(aspirasiBaru);
+        verificationQueueMap.put(newId, aspirasiBaru);          // #1
         indexAspiration(aspirasiBaru);
+        statTotal++;                                            // #6
+        statPending++;
+        statPerKategori.merge(category, 1, Integer::sum);
+        if (statTopUpvote == null) statTopUpvote = aspirasiBaru;
         saveData();
 
         System.out.println();
@@ -481,6 +559,9 @@ public class MainFlow {
             System.out.println("  Anda sudah pernah mengupvote aspirasi ini sebelumnya.");
             return;
         }
+
+        if (statTopUpvote == null || aspirasi.getUpvotes() > statTopUpvote.getUpvotes())
+            statTopUpvote = aspirasi;                           // #6
 
         saveData();
         System.out.println("  Terima kasih! Aspirasi " + id + " berhasil diupvote.");
@@ -597,10 +678,7 @@ public class MainFlow {
         String id = sc.nextLine().trim().toUpperCase();
         if (id.equals("0")) return;
 
-        Aspiration aspirasi = null;
-        for (Aspiration asp : verificationQueue) {
-            if (asp.getId().equals(id)) { aspirasi = asp; break; }
-        }
+        Aspiration aspirasi = verificationQueueMap.get(id);    // #1 - O(1)
 
         if (aspirasi == null) {
             System.out.println("  ID tidak ditemukan dalam antrean verifikasi.");
@@ -619,12 +697,17 @@ public class MainFlow {
         switch (pilihan) {
             case 1:
                 verificationQueue.remove(aspirasi);
+                verificationQueueMap.remove(id);                // #1
                 aspirasi.setStatus(sigap.enums.Status.APPROVED);
+                approvedUnscoredList.add(aspirasi);             // #2
+                statPending--;                                  // #6
                 System.out.println("  Aspirasi " + aspirasi.getId() + " disetujui.");
                 break;
             case 2:
                 verificationQueue.remove(aspirasi);
+                verificationQueueMap.remove(id);                // #1
                 aspirasi.setStatus(sigap.enums.Status.REJECTED);
+                statPending--;                                  // #6
                 System.out.println("  Aspirasi " + aspirasi.getId() + " ditolak.");
                 break;
             default:
@@ -642,14 +725,7 @@ public class MainFlow {
         System.out.println("  PENENTUAN PRIORITAS");
         System.out.println("──────────────────────────────────────────────────");
 
-        LinkedList<Aspiration> siap = new LinkedList<>();
-        for (Aspiration asp : aspirationMap.values()) {
-            if (asp.getStatus() == Status.APPROVED && !asp.isScoreLocked()) {
-                siap.add(asp);
-            }
-        }
-
-        if (siap.isEmpty()) {
+        if (approvedUnscoredList.isEmpty()) {                  // #2 - O(1) check
             System.out.println("  Tidak ada aspirasi siap diprioritaskan.");
             System.out.println("  Pastikan ada aspirasi berstatus DISETUJUI.");
             System.out.println("──────────────────────────────────────────────────");
@@ -658,7 +734,7 @@ public class MainFlow {
 
         System.out.printf("  %-8s | %-30s | %-15s | %s%n", "ID", "Judul", "Kategori", "Votes");
         System.out.println("  " + "-".repeat(66));
-        for (Aspiration asp : siap) {
+        for (Aspiration asp : approvedUnscoredList) {          // #2 - iterate only eligible
             System.out.printf("  %-8s | %-30s | %-15s | %d%n",
                     asp.getId(),
                     asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle(),
@@ -721,6 +797,8 @@ public class MainFlow {
         }
 
         target.lockScore(sAuth, sSafe);
+        approvedUnscoredList.remove(target);                   // #2
+        readyToDistributeList.add(target);                     // #3
         saveData();
 
         System.out.println();
@@ -772,12 +850,7 @@ public class MainFlow {
         System.out.println("  DISTRIBUSI KE INSTITUSI");
         System.out.println("──────────────────────────────────────────────────");
 
-        List<Aspiration> siap = new ArrayList<>();
-        for (Aspiration asp : aspirationMap.values()) {
-            if (asp.isScoreLocked() && !asp.isDistributed()) siap.add(asp);
-        }
-
-        if (siap.isEmpty()) {
+        if (readyToDistributeList.isEmpty()) {                 // #3 - O(1) check
             System.out.println("  Tidak ada laporan yang siap didistribusi.");
             System.out.println("──────────────────────────────────────────────────");
             return;
@@ -785,7 +858,7 @@ public class MainFlow {
 
         System.out.printf("  %-8s | %-30s | %-10s | %s%n", "ID", "Judul", "Prioritas", "Skor");
         System.out.println("  " + "-".repeat(62));
-        for (Aspiration asp : siap) {
+        for (Aspiration asp : readyToDistributeList) {         // #3 - iterate only eligible
             String judul = asp.getTitle().length() > 28 ? asp.getTitle().substring(0, 28) + ".." : asp.getTitle();
             System.out.printf("  %-8s | %-30s | %-10s | %.2f%n",
                     asp.getId(), judul, asp.getPriority().getLabel(), asp.getTotalScore());
@@ -795,7 +868,7 @@ public class MainFlow {
         String id = sc.nextLine().trim().toUpperCase();
         if (id.equals("0")) return;
 
-        Aspiration target = aspirationMap.get(id);
+        Aspiration target = aspirationMap.get(id);             // #3 - O(1) lookup
         if (target == null || !target.isScoreLocked() || target.isDistributed()) {
             System.out.println("  ID tidak valid atau laporan sudah didistribusi.");
             return;
@@ -823,6 +896,8 @@ public class MainFlow {
         target.setInstitutionTarget(instName);
         inst.addAspiration(target);
         target.setDistributed(true);
+        readyToDistributeList.remove(target);                  // #3
+        statPerInstitusi.merge(instName, 1, Integer::sum);     // #6
         saveData();
 
         System.out.println();
@@ -879,6 +954,10 @@ public class MainFlow {
         if (pilihan == 1) {
             inst.removeAspiration(laporan);
             laporan.setStatus(Status.ON_PROGRESS);
+            institutionOnProgressMap                           // #4
+                    .computeIfAbsent(ia.getInstitutionName(), k -> new LinkedList<>())
+                    .add(laporan);
+            statOnProgress++;                                  // #6
             System.out.println("  Status laporan " + laporan.getId() + " diperbarui: Sedang Diproses.");
             saveData();
         }
@@ -890,15 +969,10 @@ public class MainFlow {
         System.out.println("  UPDATE STATUS LAPORAN");
         System.out.println("──────────────────────────────────────────────────");
 
-        List<Aspiration> onProgress = new ArrayList<>();
-        for (Aspiration asp : aspirationMap.values()) {
-            if (asp.getInstitutionTarget().equals(ia.getInstitutionName())
-                    && asp.getStatus() == Status.ON_PROGRESS) {
-                onProgress.add(asp);
-            }
-        }
+        LinkedList<Aspiration> onProgress =                    // #4 - O(1) lookup
+                institutionOnProgressMap.get(ia.getInstitutionName());
 
-        if (onProgress.isEmpty()) {
+        if (onProgress == null || onProgress.isEmpty()) {
             System.out.println("  Tidak ada laporan sedang diproses oleh institusi Anda.");
             System.out.println("──────────────────────────────────────────────────");
             return;
@@ -937,6 +1011,12 @@ public class MainFlow {
 
         target.setClosingStatement(stmt);
         target.setStatus(Status.DONE);
+        onProgress.remove(target);                             // #4
+        institutionDoneMap                                     // #5
+                .computeIfAbsent(ia.getInstitutionName(), k -> new LinkedList<>())
+                .add(target);
+        statDone++;                                            // #6
+        statOnProgress--;
         saveData();
 
         System.out.println();
@@ -956,15 +1036,10 @@ public class MainFlow {
         System.out.println("  RIWAYAT LAPORAN SELESAI");
         System.out.println("──────────────────────────────────────────────────");
 
-        List<Aspiration> selesai = new ArrayList<>();
-        for (Aspiration asp : aspirationMap.values()) {
-            if (asp.getInstitutionTarget().equals(ia.getInstitutionName())
-                    && asp.getStatus() == Status.DONE) {
-                selesai.add(asp);
-            }
-        }
+        LinkedList<Aspiration> selesai =                       // #5 - O(1) lookup
+                institutionDoneMap.get(ia.getInstitutionName());
 
-        if (selesai.isEmpty()) {
+        if (selesai == null || selesai.isEmpty()) {
             System.out.println("  Belum ada laporan yang selesai ditangani.");
             System.out.println("──────────────────────────────────────────────────");
             return;
@@ -1039,54 +1114,35 @@ public class MainFlow {
         System.out.println("  DASHBOARD STATISTIK SIGAP");
         System.out.println("──────────────────────────────────────────────────");
 
-        int total = aspirationMap.size();
-        int done = 0, pending = 0, onProgress = 0;
-        Aspiration topUpvote = null;
-        HashMap<String, Integer> perInstitusi = new HashMap<>();
-        HashMap<String, Integer> perKategori  = new HashMap<>();
-
-        for (Aspiration asp : aspirationMap.values()) {
-            Status s = asp.getStatus();
-            if      (s == Status.DONE)        done++;
-            else if (s == Status.PENDING)     pending++;
-            else if (s == Status.ON_PROGRESS) onProgress++;
-
-            String inst = asp.getInstitutionTarget();
-            if (!inst.equals("-")) perInstitusi.merge(inst, 1, Integer::sum);
-
-            perKategori.merge(asp.getCategory(), 1, Integer::sum);
-
-            if (topUpvote == null || asp.getUpvotes() > topUpvote.getUpvotes()) topUpvote = asp;
-        }
-
+        // #6 - all values are cached; no scan of aspirationMap needed
         String trending = "-";
         int maxKat = 0;
-        for (Map.Entry<String, Integer> e : perKategori.entrySet()) {
+        for (Map.Entry<String, Integer> e : statPerKategori.entrySet()) {
             if (e.getValue() > maxKat) { maxKat = e.getValue(); trending = e.getKey(); }
         }
 
-        System.out.printf("  Total Laporan      : %d%n", total);
-        System.out.printf("  Selesai            : %d%n", done);
-        System.out.printf("  Sedang Diproses    : %d%n", onProgress);
-        System.out.printf("  Pending            : %d%n", pending);
+        System.out.printf("  Total Laporan      : %d%n", statTotal);
+        System.out.printf("  Selesai            : %d%n", statDone);
+        System.out.printf("  Sedang Diproses    : %d%n", statOnProgress);
+        System.out.printf("  Pending            : %d%n", statPending);
         System.out.println();
         System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Per Institusi");
         System.out.println("──────────────────────────────────────────────────");
-        if (perInstitusi.isEmpty()) {
+        if (statPerInstitusi.isEmpty()) {
             System.out.println("  (belum ada laporan yang didistribusi)");
         } else {
-            for (Map.Entry<String, Integer> e : perInstitusi.entrySet()) {
+            for (Map.Entry<String, Integer> e : statPerInstitusi.entrySet()) {
                 System.out.printf("  %-35s : %d laporan%n", e.getKey(), e.getValue());
             }
         }
         System.out.println();
-        if (topUpvote != null) {
+        if (statTopUpvote != null) {
             System.out.println("──────────────────────────────────────────────────");
             System.out.println("  Upvote Tertinggi");
             System.out.println("──────────────────────────────────────────────────");
             System.out.printf("  %s | %s | %d votes%n",
-                    topUpvote.getId(), topUpvote.getTitle(), topUpvote.getUpvotes());
+                    statTopUpvote.getId(), statTopUpvote.getTitle(), statTopUpvote.getUpvotes());
         }
         System.out.println();
         System.out.printf("  Trending Issue     : %s (%d laporan)%n", trending, maxKat);
@@ -1127,15 +1183,10 @@ public class MainFlow {
                     }
                 }
 
-                List<Aspiration> onProgress = new ArrayList<>();
-                for (Aspiration asp : aspirationMap.values()) {
-                    if (asp.getInstitutionTarget().equals(inst.getNamaInstitution())
-                            && asp.getStatus() == Status.ON_PROGRESS) {
-                        onProgress.add(asp);
-                    }
-                }
+                LinkedList<Aspiration> onProgress =             // #7 - O(1) lookup
+                        institutionOnProgressMap.get(inst.getNamaInstitution());
 
-                if (onProgress.isEmpty()) {
+                if (onProgress == null || onProgress.isEmpty()) {
                     System.out.println("    [Diproses] (tidak ada)");
                 } else {
                     for (Aspiration asp : onProgress) {
