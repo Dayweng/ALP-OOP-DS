@@ -892,6 +892,63 @@ public class MainFlow {
         System.out.println("  INSTITUSI BERHASIL DITAMBAHKAN!");
         System.out.println("──────────────────────────────────────────────────");
         System.out.println("  Nama: " + nama);
+        System.out.println();
+        System.out.println("  Institusi baru memerlukan akun admin untuk dapat diakses.");
+        System.out.println("  Silakan buat akun Admin Institusi sekarang.");
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.println("  BUAT AKUN ADMIN INSTITUSI");
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.println("  Institusi : " + nama);
+        System.out.println();
+
+        System.out.print("  Nama Admin   : ");
+        String namaAdmin = sc.nextLine().trim();
+        if (namaAdmin.isEmpty()) {
+            System.out.println("  Nama tidak boleh kosong. Akun admin tidak dibuat.");
+            System.out.println("  Gunakan menu Distribusi Institusi untuk mengirim laporan ke sini.");
+            return;
+        }
+
+        System.out.print("  Username     : ");
+        String username = sc.nextLine().trim().toLowerCase();
+        if (username.isEmpty() || username.contains(" ")) {
+            System.out.println("  Username tidak valid. Akun admin tidak dibuat.");
+            System.out.println("  Gunakan menu Distribusi Institusi untuk mengirim laporan ke sini.");
+            return;
+        }
+        if (userMap.containsKey(username)) {
+            System.out.println("  Username '" + username + "' sudah digunakan. Akun admin tidak dibuat.");
+            System.out.println("  Gunakan fitur Registrasi Admin Institusi dari akun InstitutionAdmin untuk menambahkan admin nanti.");
+            return;
+        }
+
+        System.out.print("  Password     : ");
+        String password = sc.nextLine().trim();
+        if (password.length() < 6) {
+            System.out.println("  Password minimal 6 karakter. Akun admin tidak dibuat.");
+            System.out.println("  Gunakan fitur Registrasi Admin Institusi dari akun InstitutionAdmin untuk menambahkan admin nanti.");
+            return;
+        }
+
+        System.out.print("  Konfirmasi Password: ");
+        String konfirmasi = sc.nextLine().trim();
+        if (!password.equals(konfirmasi)) {
+            System.out.println("  Password tidak cocok. Akun admin tidak dibuat.");
+            System.out.println("  Gunakan fitur Registrasi Admin Institusi dari akun InstitutionAdmin untuk menambahkan admin nanti.");
+            return;
+        }
+
+        InstitutionAdmin adminBaru = new InstitutionAdmin(username, password, namaAdmin, nama);
+        userMap.put(username, adminBaru);
+        saveData();
+
+        System.out.println();
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.println("  AKUN ADMIN INSTITUSI BERHASIL DIBUAT!");
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.println("    Nama      : " + namaAdmin);
+        System.out.println("    Username  : " + username);
+        System.out.println("    Institusi : " + nama);
         System.out.println("  Gunakan menu Distribusi Institusi untuk mengirim laporan ke sini.");
     }
 
