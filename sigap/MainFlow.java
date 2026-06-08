@@ -1433,7 +1433,7 @@ public class MainFlow {
         saveComments();
     }
 
-    // Format per baris: aspirationId|username|comment|timestamp
+    //Format per baris: aspirationId|username|comment|timestamp
     static void saveComments() {
         try {
             new File(DATA_DIR).mkdirs();

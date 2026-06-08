@@ -7,3 +7,4 @@ ADMIN|admin|admin123|Administrator SIGAP|
 INSTITUTION_ADMIN|cavinamadeus|123456|cavinamadeus|Dinas Kesehatan Sidoarjo
 CITIZEN|cavin|cavin123|Cavin Amadeus|
 CITIZEN|siti|siti123|Siti Aminah|
+INSTITUTION_ADMIN|cavin|cavin123|Cavin Rafi|Arya PT Sogeh
