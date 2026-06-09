@@ -433,41 +433,10 @@ public class MainFlow {
     }
 
     static void tampilkanSemuaAspirasi(Citizen citizen) {
-        System.out.println();
-        System.out.println("──────────────────────────────────────────────────");
-        System.out.println("  DAFTAR ASPIRASI PUBLIK");
-        System.out.println("──────────────────────────────────────────────────");
-
-        if (aspirationMap.isEmpty()) {
-            System.out.println("  Belum ada aspirasi yang tersedia.");
-            System.out.println("──────────────────────────────────────────────────");
-            return;
+        if (citizen.aspirasiCache == null) {
+            citizen.aspirasiCache = aspirationMap;
         }
-
-        // -- My Aspirations first --
-        LinkedList<Aspiration> mine  = new LinkedList<>();
-        LinkedList<Aspiration> other = new LinkedList<>();
-        for (Aspiration asp : aspirationMap.values()) {
-            if (asp.getAuthor().equals(citizen.getUsername())) mine.add(asp);
-            else                                               other.add(asp);
-        }
-
-        System.out.println("  [ Aspirasi Saya ]");
-        if (mine.isEmpty()) {
-            System.out.println("  (belum ada aspirasi)");
-        } else {
-            for (Aspiration asp : mine) asp.displaySummary();
-        }
-
-        System.out.println();
-        System.out.println("  [ Aspirasi Publik Lainnya ]");
-        if (other.isEmpty()) {
-            System.out.println("  (tidak ada aspirasi lain)");
-        } else {
-            for (Aspiration asp : other) asp.displaySummary();
-        }
-
-        System.out.println("──────────────────────────────────────────────────");
+        citizen.lihatAspirasi();
     }
 
     static void upvoteAspiration(Citizen citizen) {

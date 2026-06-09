@@ -1,10 +1,10 @@
 INSTITUTION_ADMIN|inst_pu|pu123|Pak Agus Setiawan|Dinas Pekerjaan Umum Sidoarjo
+INSTITUTION_ADMIN|inst_kes|kes123|Admin Menteri Kesehatan|Menteri Kesehatan Indonesia
 CITIZEN|budi|budi123|Budi Santoso|
 CITIZEN|cav123|cav123|cav123|
 INSTITUTION_ADMIN|inst_dinkes|dinkes123|Bu Rina Widayanti|Dinas Kesehatan Sidoarjo
 INSTITUTION_ADMIN|kyubi123|Kyubi123|Kyubi Nimansara|Dinas Kesehatan Sidoarjo
 ADMIN|admin|admin123|Administrator SIGAP|
 INSTITUTION_ADMIN|cavinamadeus|123456|cavinamadeus|Dinas Kesehatan Sidoarjo
-CITIZEN|cavin|cavin123|Cavin Amadeus|
-CITIZEN|siti|siti123|Siti Aminah|
 INSTITUTION_ADMIN|cavin|cavin123|Cavin Rafi|Arya PT Sogeh
+CITIZEN|siti|siti123|Siti Aminah|

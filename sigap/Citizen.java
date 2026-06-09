@@ -1,8 +1,13 @@
 package sigap;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 public class Citizen extends User {
+    HashMap<String, Aspiration> aspirasiCache;
+
     public Citizen(String username, String password, String nama) {
-        super(username, password, nama); 
+        super(username, password, nama);
     }
 
     @Override
@@ -31,5 +36,42 @@ public class Citizen extends User {
                                    String location) {
 
         return new Aspiration(id, title, description, category, location, this.getUsername());
+    }
+
+    public void lihatAspirasi() {
+        System.out.println();
+        System.out.println("──────────────────────────────────────────────────");
+        System.out.println("  DAFTAR ASPIRASI PUBLIK");
+        System.out.println("──────────────────────────────────────────────────");
+
+        if (aspirasiCache == null || aspirasiCache.isEmpty()) {
+            System.out.println("  Belum ada aspirasi yang tersedia.");
+            System.out.println("──────────────────────────────────────────────────");
+            return;
+        }
+
+        LinkedList<Aspiration> mine  = new LinkedList<>();
+        LinkedList<Aspiration> other = new LinkedList<>();
+        for (Aspiration asp : aspirasiCache.values()) {
+            if (asp.getAuthor().equals(this.getUsername())) mine.add(asp);
+            else                                            other.add(asp);
+        }
+
+        System.out.println("  [ Aspirasi Saya ]");
+        if (mine.isEmpty()) {
+            System.out.println("  (belum ada aspirasi)");
+        } else {
+            for (Aspiration asp : mine) asp.displaySummary();
+        }
+
+        System.out.println();
+        System.out.println("  [ Aspirasi Publik Lainnya ]");
+        if (other.isEmpty()) {
+            System.out.println("  (tidak ada aspirasi lain)");
+        } else {
+            for (Aspiration asp : other) asp.displaySummary();
+        }
+
+        System.out.println("──────────────────────────────────────────────────");
     }
 }
