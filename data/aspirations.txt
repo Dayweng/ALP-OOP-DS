@@ -1,7 +1,8 @@
-ASP001|Cavin Suka sama Valerie|Suka aja mau balap BFD|Kesehatan|UC Walk|cavin|PENDING|1|-|false|false|-|0.0|0.0|0.0|02-06-2026 11:45|budi
+ASP001|Cavin Suka sama Valerie|Suka aja mau balap BFD|Kesehatan|UC Walk|cavin|REJECTED|1|-|false|false|-|0.0|0.0|0.0|02-06-2026 11:45|budi
 ASP003|Jalan Bolong di depan UC|jalan di raya made|Infrastruktur|Raya Made|budi|APPROVED|0|-|false|false|-|0.0|0.0|0.0|02-06-2026 11:46|
 ASP002|Cavin suka sama Christa Juga|wes dapat yang mana bebas|Infrastruktur|Shuyi Denver|cavin|PENDING|1|-|false|false|-|0.0|0.0|0.0|02-06-2026 11:45|budi
 ASP005|Kamar cavin tidak pernah dibersikan|aduh|Lainnya|Kamar Cavin|budi|PENDING|0|-|false|false|-|0.0|0.0|0.0|02-06-2026 11:47|
 ASP004|Lingkungan Kotor|Lingkungan UC kotor|Lingkungan|UC|budi|PENDING|0|-|false|false|-|0.0|0.0|0.0|02-06-2026 11:46|
 ASP007|bom di gresik|ada seorang fanatik membawa bom dan meledakan fasilitas umum|Kesehatan|gresik|cav123|DONE|0|Dinas Kesehatan Sidoarjo|true|true|sudah di bom balik orangnya|3.0|3.0|3.4499999999999997|01-06-2026 12:13|
 ASP006|Sampah Menumpuk di Bantaran Sungai Porong|Bantaran sungai Porong penuh dengan sampah rumah tangga. Bau tidak sedap mengganggu warga sekitar dan berpotensi menjadi sarang nyamuk. Perlu penanganan segera.|Lingkungan|Bantaran Sungai Porong, Kec. Porong, Sidoarjo|budi|DONE|1|Dinas Kesehatan Sidoarjo|true|true|sudah di tambal|9.0|9.0|6.18|01-06-2026 09:18|cav123
+ASP009|Galon UC SIFT Habis|Habis terus|Pendidikan|SIFT|budi|APPROVED|0|Dinas Percintaan Sejati|true|true|-|10.0|10.0|6.550000000000001|09-06-2026 08:58|
